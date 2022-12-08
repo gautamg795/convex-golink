@@ -60,7 +60,7 @@ var LastSnapshot []byte
 var embeddedFS embed.FS
 
 // db stores short links.
-var db *SQLiteDB
+var db Database
 
 var localClient *tailscale.LocalClient
 
