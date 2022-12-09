@@ -38,6 +38,7 @@ const defaultHostname = "go"
 var (
 	verbose           = flag.Bool("verbose", false, "be verbose")
 	sqlitefile        = flag.String("sqlitedb", "", "path of SQLite database to store links")
+	convexHost        = flag.String("convex-host", "", "URL of the Convex backend to use for storage")
 	dev               = flag.String("dev-listen", "", "if non-empty, listen on this addr and run in dev mode; auto-set sqlitedb if empty and don't use tsnet")
 	snapshot          = flag.String("snapshot", "", "file path of snapshot file")
 	hostname          = flag.String("hostname", defaultHostname, "service name")
@@ -77,7 +78,7 @@ func Run() error {
 		}
 	}
 
-	if *sqlitefile == "" {
+	if *sqlitefile == "" && *convexHost == "" {
 		if devMode() {
 			tmpdir, err := ioutil.TempDir("", "golink_dev_*")
 			if err != nil {
@@ -86,13 +87,19 @@ func Run() error {
 			*sqlitefile = filepath.Join(tmpdir, "golink.db")
 			log.Printf("Dev mode temp db: %s", *sqlitefile)
 		} else {
-			return errors.New("--sqlitedb is required")
+			log.Fatal("Either --sqlitedb or --convex-host must be supplied if --dev-listen is not specified")
 		}
 	}
 
-	var err error
-	if db, err = NewSQLiteDB(*sqlitefile); err != nil {
-		return fmt.Errorf("NewSQLiteDB(%q): %w", *sqlitefile, err)
+	if *convexHost != "" {
+		db = NewConvexDB(*convexHost)
+	}
+
+	if db == nil {
+		var err error
+		if db, err = NewSQLiteDB(*sqlitefile); err != nil {
+			return fmt.Errorf("NewSQLiteDB(%q): %w", *sqlitefile, err)
+		}
 	}
 
 	if *snapshot != "" {
