@@ -131,12 +131,15 @@ func (c *ConvexDB) Load(short string) (*Link, error) {
 	if err != nil {
 		return nil, err
 	}
-	var doc LinkDocument
+	var doc *LinkDocument
 	decoder := json.NewDecoder(bytes.NewReader(resp))
 	decoder.UseNumber()
 	err = decoder.Decode(&doc)
 	if err != nil {
 		return nil, err
+	}
+	if doc == nil {
+		return nil, nil
 	}
 
 	link := Link{
