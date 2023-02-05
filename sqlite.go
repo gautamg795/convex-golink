@@ -11,6 +11,7 @@ import (
 
 	_ "modernc.org/sqlite"
 )
+
 // SQLiteDB stores Links in a SQLite database.
 type SQLiteDB struct {
 	db *sql.DB
@@ -98,6 +99,15 @@ func (s *SQLiteDB) Save(link *Link) error {
 
 // LoadStats returns click stats for links.
 func (s *SQLiteDB) LoadStats() (ClickStats, error) {
+	allLinks, err := s.LoadAll()
+	if err != nil {
+		return nil, err
+	}
+	linkmap := make(map[string]string, len(allLinks)) // map ID => Short
+	for _, link := range allLinks {
+		linkmap[linkID(link.Short)] = link.Short
+	}
+
 	rows, err := s.db.Query("SELECT ID, sum(Clicks) FROM Stats GROUP BY ID")
 	if err != nil {
 		return nil, err
@@ -110,7 +120,8 @@ func (s *SQLiteDB) LoadStats() (ClickStats, error) {
 		if err != nil {
 			return nil, err
 		}
-		stats[id] = clicks
+		short := linkmap[id]
+		stats[short] = clicks
 	}
 	return stats, rows.Err()
 }
