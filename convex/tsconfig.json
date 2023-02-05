@@ -18,7 +18,7 @@
     "isolatedModules": true,
     "noEmit": true,
     /* Prevents node_modules from adding additional global types e.g. node types */
-    "types": []
+    "types": ["node"]
   },
   "include": ["./**/*"],
   "exclude": ["./_generated", "./actions"]
