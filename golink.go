@@ -29,6 +29,7 @@ import (
 	"time"
 
 	"tailscale.com/client/tailscale"
+	"tailscale.com/ipn"
 	"tailscale.com/tsnet"
 )
 
@@ -36,6 +37,7 @@ const defaultHostname = "go"
 
 var (
 	verbose           = flag.Bool("verbose", false, "be verbose")
+	controlURL        = flag.String("control-url", ipn.DefaultControlURL, "the URL base of the control plane (i.e. coordination server)")
 	sqlitefile        = flag.String("sqlitedb", "", "path of SQLite database to store links")
 	convexHost        = flag.String("convex-host", "", "URL of the Convex backend to use for storage")
 	convexToken       = flag.String("convex-token", "", "Authorization token to pass to the Convex backend")
@@ -164,8 +166,9 @@ func Run() error {
 	}
 
 	srv := &tsnet.Server{
-		Hostname: *hostname,
-		Logf:     func(format string, args ...any) {},
+		ControlURL: *controlURL,
+		Hostname:   *hostname,
+		Logf:       func(format string, args ...any) {},
 	}
 	if *verbose {
 		srv.Logf = log.Printf

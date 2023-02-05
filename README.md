@@ -4,6 +4,9 @@
 
 golink is a private shortlink service for your [tailnet].
 It lets you create short, memorable links for the websites you and your team use most.
+If you're new to golink, learn more in our [announcement blog post](https://tailscale.com/blog/golink/).
+If you were looking for a SaaS go link service that doesn't use Tailscale,
+you might be thinking of [golinks.io](https://golinks.io) or [trot.to](http://trot.to)
 
 [tailnet]: https://tailscale.com/kb/1136/tailnet/
 
@@ -41,7 +44,7 @@ You will also need to specify your sqlite database file:
 golink stores its tailscale data files in a `tsnet-golink` directory inside [os.UserConfigDir].
 As long as this is on a persistent volume, the auth key only needs to be provided on first run.
 
-[auth-key]: https://tailscale.com/kb/1085/auth-keys/
+[auth key]: https://tailscale.com/kb/1085/auth-keys/
 [tag]: https://tailscale.com/kb/1068/acl-tags/
 [os.UserConfigDir]: https://pkg.go.dev/os#UserConfigDir
 
@@ -65,7 +68,7 @@ Two pieces of data should be on persistent volumes:
 
 In the docker image, both are stored in `/home/nonroot`, so you can mount a persistent volume:
 
-    docker run -v /persistant/data:/home/nonroot ghcr.io/tailscale/golink:main
+    docker run -v /persistent/data:/home/nonroot ghcr.io/tailscale/golink:main
 
 The mounted directory will need to be writable by the nonroot user (uid: 65532, gid: 65532),
 for example by calling `sudo chown 65532 /persistent/data`.
@@ -124,3 +127,13 @@ Only links that don't already exist in the database will be added.
 You can also resolve links locally using a snapshot file:
 
     golink -resolve-from-backup links.json go/link
+
+## Firefox configuration
+
+If you're using Firefox, you might want to configure two options to make it easy to load links:
+    
+  * to prevent `go/` page loads from the address bar being treated as searches,
+    navigate to `about:config` and add a boolean setting `browser.fixup.domainwhitelist.go`
+    with a value of _true_
+
+  * if you use HTTPS-Only Mode, [add an exception](https://support.mozilla.org/en-US/kb/https-only-prefs#w_add-exceptions-for-http-websites-when-youre-in-https-only-mode)
