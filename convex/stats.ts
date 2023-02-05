@@ -1,5 +1,4 @@
 import { query, mutation } from "./_generated/server";
-import { Document, Id } from "./_generated/dataModel";
 
 export const loadStats = query(async ({ db }, token: string) => {
   if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
@@ -17,7 +16,6 @@ export const loadStats = query(async ({ db }, token: string) => {
       stats.set(link.normalizedId, clicks);
     }
   }
-  console.log(stats);
   return stats;
 });
 
