@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"time"
 )
@@ -142,7 +143,8 @@ func (c *ConvexDB) Load(short string) (*Link, error) {
 		return nil, err
 	}
 	if doc == nil {
-		return nil, nil
+		err := fs.ErrNotExist
+		return nil, err
 	}
 
 	link := Link{
