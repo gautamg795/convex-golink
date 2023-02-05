@@ -1,7 +1,10 @@
 import { mutation } from "./_generated/server";
 import { Document } from "./_generated/dataModel";
 
-export default mutation(async ({ db }, link: Document<"links">) => {
+export default mutation(async ({ db }, link: Document<"links">, token: string) => {
+  if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
+    throw new Error("Invalid authorization token");
+  }
   let existing = await db
     .query("links")
     .withIndex("by_normalizedId", (q) =>

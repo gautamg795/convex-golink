@@ -12,9 +12,15 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
+func clear(c *ConvexDB) {
+	c.mutation(&UdfExecution{Path: "clear", Args: []interface{}{}})
+}
+
 // Test saving and loading links for SQLiteDB
 func Test_Convex_SaveLoadLinks(t *testing.T) {
-	db := NewConvexDB("https://feeble-gull-946.convex.cloud")
+	db := NewConvexDB("https://feeble-gull-946.convex.cloud", "test")
+	clear(db)
+	defer clear(db)
 
 	links := []*Link{
 		{Short: "short", Long: "long", Created: time.Now(), LastEdit: time.Now()},
@@ -50,7 +56,10 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 
 // Test saving and loading stats for SQLiteDB
 func Test_Convex_SaveLoadStats(t *testing.T) {
-	db := NewConvexDB("https://feeble-gull-946.convex.cloud")
+	db := NewConvexDB("https://feeble-gull-946.convex.cloud", "test")
+	clear(db)
+	defer clear(db)
+
 
 	// preload some links
 	links := []*Link{

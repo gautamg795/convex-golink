@@ -39,6 +39,7 @@ var (
 	verbose           = flag.Bool("verbose", false, "be verbose")
 	sqlitefile        = flag.String("sqlitedb", "", "path of SQLite database to store links")
 	convexHost        = flag.String("convex-host", "", "URL of the Convex backend to use for storage")
+	convexToken       = flag.String("convex-token", "", "Authorization token to pass to the Convex backend")
 	dev               = flag.String("dev-listen", "", "if non-empty, listen on this addr and run in dev mode; auto-set sqlitedb if empty and don't use tsnet")
 	snapshot          = flag.String("snapshot", "", "file path of snapshot file")
 	hostname          = flag.String("hostname", defaultHostname, "service name")
@@ -92,7 +93,10 @@ func Run() error {
 	}
 
 	if *convexHost != "" {
-		db = NewConvexDB(*convexHost)
+		if *convexToken == "" {
+			log.Fatal("A authorization token must be provided when using Convex.")
+		}
+		db = NewConvexDB(*convexHost, *convexToken)
 	}
 
 	if db == nil {

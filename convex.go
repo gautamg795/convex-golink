@@ -22,7 +22,8 @@ type StatsMap struct {
 }
 
 type ConvexDB struct {
-	url string
+	url   string
+	token string
 }
 
 type UdfExecution struct {
@@ -36,11 +37,12 @@ type ConvexResponse struct {
 	ErrorMessage string          `json:"errorMessage"`
 }
 
-func NewConvexDB(url string) *ConvexDB {
-	return &ConvexDB{url: url}
+func NewConvexDB(url string, token string) *ConvexDB {
+	return &ConvexDB{url: url, token: token}
 }
 
 func (c *ConvexDB) mutation(args *UdfExecution) error {
+	args.Args = append(args.Args, c.token)
 	url := fmt.Sprintf("%s/api/mutation", c.url)
 	encodedArgs, err := json.Marshal(args)
 	if err != nil {
@@ -70,6 +72,7 @@ func (c *ConvexDB) mutation(args *UdfExecution) error {
 }
 
 func (c *ConvexDB) query(args *UdfExecution) (json.RawMessage, error) {
+	args.Args = append(args.Args, c.token)
 	url := fmt.Sprintf("%s/api/query", c.url)
 	encodedArgs, err := json.Marshal(args)
 	if err != nil {

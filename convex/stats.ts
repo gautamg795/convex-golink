@@ -1,7 +1,10 @@
 import { query, mutation } from "./_generated/server";
 import { Document, Id } from "./_generated/dataModel";
 
-export const loadStats = query(async ({ db }) => {
+export const loadStats = query(async ({ db }, token: string) => {
+  if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
+    throw new Error("Invalid authorization token");
+  }
   let stats = new Map<string, number>();
   for await (const link of db.query("links").fullTableScan()) {
     const clicks = (
@@ -18,7 +21,10 @@ export const loadStats = query(async ({ db }) => {
   return stats;
 });
 
-export const saveStats = mutation(async ({ db }, stats: Object) => {
+export const saveStats = mutation(async ({ db }, stats: Object, token: string) => {
+  if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
+    throw new Error("Invalid authorization token");
+  }
   for (const [normalizedId, clicks] of Object.entries(stats)) {
     const link = await db
       .query("links")
