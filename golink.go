@@ -7,7 +7,6 @@ package golink
 import (
 	"bufio"
 	"bytes"
-	"context"
 	"embed"
 	"encoding/json"
 	"errors"
@@ -40,6 +39,7 @@ var (
 	sqlitefile        = flag.String("sqlitedb", "", "path of SQLite database to store links")
 	convexHost        = flag.String("convex-host", "", "URL of the Convex backend to use for storage")
 	convexToken       = flag.String("convex-token", "", "Authorization token to pass to the Convex backend")
+	publicPort        = flag.Int("public-port", 0, "Public port to listen on, if desired.")
 	dev               = flag.String("dev-listen", "", "if non-empty, listen on this addr and run in dev mode; auto-set sqlitedb if empty and don't use tsnet")
 	snapshot          = flag.String("snapshot", "", "file path of snapshot file")
 	hostname          = flag.String("hostname", defaultHostname, "service name")
@@ -180,11 +180,27 @@ func Run() error {
 		return err
 	}
 
+	if publicPort != nil && *publicPort != 0 {
+		go servePublic(*publicPort)
+	}
+
 	log.Printf("Serving http://%s/ ...", *hostname)
 	if err := http.Serve(l80, nil); err != nil {
 		return err
 	}
 	return nil
+}
+
+func servePublic(port int) {
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer l.Close()
+	err = http.Serve(l, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 var (
@@ -392,13 +408,9 @@ func serveDetail(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ownerExists, err := userExists(r.Context(), link.Owner)
-	if err != nil {
-		log.Printf("looking up tailnet user %q: %v", link.Owner, err)
-	}
 
 	data := detailData{Link: link}
-	if link.Owner == login || !ownerExists {
+	if link.Owner == login {
 		data.Editable = true
 		data.Link.Owner = login
 	}
@@ -455,6 +467,8 @@ func currentUser(r *http.Request) (string, error) {
 	login := ""
 	if devMode() {
 		login = "foo@example.com"
+	} else if header := r.Header.Get("X-Forwarded-User"); header != "" {
+		login = header
 	} else {
 		res, err := localClient.WhoIs(r.Context(), r.RemoteAddr)
 		if err != nil {
@@ -462,26 +476,11 @@ func currentUser(r *http.Request) (string, error) {
 		}
 		login = res.UserProfile.LoginName
 	}
+	if login == "" {
+		return "", errors.New("no logged in user found")
+	}
 	return login, nil
 
-}
-
-// userExists returns whether a user exists with the specified login in the current tailnet.
-func userExists(ctx context.Context, login string) (bool, error) {
-	if devMode() {
-		// in dev mode, just assume the user exists
-		return true, nil
-	}
-	st, err := localClient.Status(ctx)
-	if err != nil {
-		return false, err
-	}
-	for _, user := range st.User {
-		if user.LoginName == login {
-			return true, nil
-		}
-	}
-	return false, nil
 }
 
 var reShortName = regexp.MustCompile(`^\w[\w\-\.]*$`)
@@ -516,30 +515,15 @@ func serveSave(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if link != nil && link.Owner != "" && link.Owner != login {
-		exists, err := userExists(r.Context(), link.Owner)
-		if err != nil {
-			log.Printf("looking up tailnet user %q: %v", link.Owner, err)
-		}
 		// Don't allow taking over links if the owner account still exists
 		// or if we're unsure because an error occurred.
-		if exists || err != nil {
-			http.Error(w, "not your link; owned by "+link.Owner, http.StatusForbidden)
-			return
-		}
+		http.Error(w, "not your link; owned by "+link.Owner, http.StatusForbidden)
+		return
 	}
 
 	// allow transferring ownership to valid users. If empty, set owner to current user.
 	owner := r.FormValue("owner")
 	if owner != "" {
-		exists, err := userExists(r.Context(), owner)
-		if err != nil {
-			log.Printf("looking up tailnet user %q: %v", link.Owner, err)
-		}
-		if !exists {
-			http.Error(w, "new owner not a valid user: "+owner, http.StatusBadRequest)
-			return
-		}
-	} else {
 		owner = login
 	}
 
