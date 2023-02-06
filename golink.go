@@ -526,7 +526,7 @@ func serveSave(w http.ResponseWriter, r *http.Request) {
 
 	// allow transferring ownership to valid users. If empty, set owner to current user.
 	owner := r.FormValue("owner")
-	if owner != "" {
+	if owner == "" {
 		owner = login
 	}
 
