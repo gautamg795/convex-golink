@@ -145,6 +145,7 @@ func Run() error {
 	http.HandleFunc("/.export", serveExport)
 	http.HandleFunc("/.help", serveHelp)
 	http.HandleFunc("/.opensearch", serveOpenSearch)
+	http.HandleFunc("/.all", serveAll)
 	http.Handle("/.static/", http.StripPrefix("/.", http.FileServer(http.FS(embeddedFS))))
 
 	if *dev != "" {
@@ -223,6 +224,9 @@ var (
 	// helpTmpl is the template used by the http://go/.help page
 	helpTmpl *template.Template
 
+	// allTmpl is the template used by the http://go/.all page
+	allTmpl *template.Template
+
 	// opensearchTmpl is the template used by the http://go/.opensearch page
 	opensearchTmpl *template.Template
 )
@@ -243,6 +247,7 @@ func init() {
 	detailTmpl = template.Must(template.ParseFS(embeddedFS, "tmpl/base.html", "tmpl/detail.html"))
 	successTmpl = template.Must(template.ParseFS(embeddedFS, "tmpl/base.html", "tmpl/success.html"))
 	helpTmpl = template.Must(template.ParseFS(embeddedFS, "tmpl/base.html", "tmpl/help.html"))
+	allTmpl = template.Must(template.ParseFS(embeddedFS, "tmpl/base.html", "tmpl/all.html"))
 	opensearchTmpl = template.Must(template.ParseFS(embeddedFS, "tmpl/opensearch.xml"))
 }
 
@@ -266,6 +271,10 @@ func initStats() error {
 func flushStats() error {
 	stats.mu.Lock()
 	defer stats.mu.Unlock()
+
+	if len(stats.dirty) == 0 {
+		return nil
+	}
 
 	if err := db.SaveStats(stats.dirty); err != nil {
 		return err
@@ -310,6 +319,24 @@ func serveHome(w http.ResponseWriter, short string) {
 		Short:  short,
 		Clicks: clicks,
 	})
+}
+
+func serveAll(w http.ResponseWriter, _ *http.Request) {
+	if err := flushStats(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	links, err := db.LoadAll()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	sort.Slice(links, func(i, j int) bool {
+		return links[i].Short < links[j].Short
+	})
+
+	allTmpl.Execute(w, links)
 }
 
 func serveHelp(w http.ResponseWriter, _ *http.Request) {
@@ -366,7 +393,9 @@ func serveGo(w http.ResponseWriter, r *http.Request) {
 	stats.dirty[link.Short]++
 	stats.mu.Unlock()
 
-	target, err := expandLink(link.Long, expandEnv{Now: time.Now().UTC(), Path: remainder})
+	currentUser, _ := currentUser(r)
+
+	target, err := expandLink(link.Long, expandEnv{Now: time.Now().UTC(), Path: remainder, User: currentUser})
 	if err != nil {
 		log.Printf("expanding %q: %v", link.Long, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -430,6 +459,10 @@ type expandEnv struct {
 	// Path is the remaining path after short name.  For example, in
 	// "http://go/who/amelie", Path is "amelie".
 	Path string
+
+	// User is the current user, if any.
+	// For example, "foo@example.com" or "foo@github".
+	User string
 }
 
 var expandFuncMap = texttemplate.FuncMap{
