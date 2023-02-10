@@ -28,6 +28,7 @@ import (
 	texttemplate "text/template"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"tailscale.com/client/tailscale"
 	"tailscale.com/ipn"
 	"tailscale.com/tsnet"
@@ -197,11 +198,13 @@ func Run() error {
 func servePublic(port int) {
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
+		sentry.CaptureException(err)
 		log.Fatal(err)
 	}
 	defer l.Close()
 	err = http.Serve(l, nil)
 	if err != nil {
+		sentry.CaptureException(err)
 		log.Fatal(err)
 	}
 }
