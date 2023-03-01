@@ -30,6 +30,7 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"tailscale.com/client/tailscale"
+	"tailscale.com/hostinfo"
 	"tailscale.com/ipn"
 	"tailscale.com/tsnet"
 )
@@ -71,6 +72,8 @@ var localClient *tailscale.LocalClient
 
 func Run() error {
 	flag.Parse()
+
+	hostinfo.SetApp("golink")
 
 	// if resolving from backup, set sqlitefile and snapshot flags to
 	// restore links into an in-memory sqlite database.

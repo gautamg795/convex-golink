@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"sync"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -15,6 +16,7 @@ import (
 // SQLiteDB stores Links in a SQLite database.
 type SQLiteDB struct {
 	db *sql.DB
+	mu sync.RWMutex
 }
 
 //go:embed schema.sql
@@ -41,6 +43,9 @@ func NewSQLiteDB(f string) (*SQLiteDB, error) {
 //
 // The caller owns the returned values.
 func (s *SQLiteDB) LoadAll() ([]*Link, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
 	var links []*Link
 	rows, err := s.db.Query("SELECT Short, Long, Created, LastEdit, Owner FROM Links")
 	if err != nil {
@@ -66,6 +71,9 @@ func (s *SQLiteDB) LoadAll() ([]*Link, error) {
 //
 // The caller owns the returned value.
 func (s *SQLiteDB) Load(short string) (*Link, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
 	link := new(Link)
 	var created, lastEdit int64
 	row := s.db.QueryRow("SELECT Short, Long, Created, LastEdit, Owner FROM Links WHERE ID = ?1 LIMIT 1", linkID(short))
@@ -83,6 +91,9 @@ func (s *SQLiteDB) Load(short string) (*Link, error) {
 
 // Save saves a Link.
 func (s *SQLiteDB) Save(link *Link) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	result, err := s.db.Exec("INSERT OR REPLACE INTO Links (ID, Short, Long, Created, LastEdit, Owner) VALUES (?, ?, ?, ?, ?, ?)", linkID(link.Short), link.Short, link.Long, link.Created.Unix(), link.LastEdit.Unix(), link.Owner)
 	if err != nil {
 		return err
@@ -108,6 +119,9 @@ func (s *SQLiteDB) LoadStats() (ClickStats, error) {
 		linkmap[linkID(link.Short)] = link.Short
 	}
 
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
 	rows, err := s.db.Query("SELECT ID, sum(Clicks) FROM Stats GROUP BY ID")
 	if err != nil {
 		return nil, err
@@ -130,6 +144,9 @@ func (s *SQLiteDB) LoadStats() (ClickStats, error) {
 // incremental clicks that have occurred since the last time SaveStats
 // was called.
 func (s *SQLiteDB) SaveStats(stats ClickStats) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	tx, err := s.db.BeginTx(context.TODO(), nil)
 	if err != nil {
 		return err

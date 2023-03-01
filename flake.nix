@@ -24,12 +24,12 @@
           pkgs = nixpkgs.legacyPackages.${prev.system};
         in
         rec {
-          golink = pkgs.buildGo119Module rec {
+          golink = pkgs.buildGo120Module rec {
             pname = "golink";
             version = golinkVersion;
             src = pkgs.nix-gitignore.gitignoreSource [ ] ./.;
 
-            vendorSha256 = "sha256-uho3VxVpCmHBVg6zcB+HhiplG7qfl6iJxMacRnzAR/0=";
+            vendorSha256 = "sha256-cOpBNJCn3+tkPix3px4u7OhlS+hTdDPvOCuz/J+WQ9g="; # SHA based on vendoring go.mod
           };
         };
     }
@@ -43,7 +43,7 @@
       in
       rec {
         # `nix develop`
-        devShell = pkgs.mkShell { buildInputs = [ pkgs.go ]; };
+        devShell = pkgs.mkShell { buildInputs = [ pkgs.go_1_20 ]; };
 
         # `nix build`
         packages = with pkgs; {
