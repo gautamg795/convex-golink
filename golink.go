@@ -7,6 +7,7 @@ package golink
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"embed"
 	"encoding/json"
 	"errors"
@@ -20,11 +21,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
 	"sync"
+	"syscall"
 	texttemplate "text/template"
 	"time"
 
@@ -182,6 +185,16 @@ func Run() error {
 		return err
 	}
 	localClient, _ = srv.LocalClient()
+
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-signals
+		if localClient != nil {
+			localClient.Logout(context.Background())
+		}
+	}()
 
 	l80, err := srv.Listen("tcp", ":80")
 	if err != nil {
