@@ -1,16 +1,19 @@
-import { defineSchema, defineTable, s } from "convex/schema";
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
+
+export const LinkDoc = {
+  normalizedId: v.string(),
+  short: v.string(),
+  long: v.string(),
+  created: v.number(),
+  lastEdit: v.number(),
+  owner: v.string(),
+};
 
 export default defineSchema({
-  links: defineTable({
-    normalizedId: s.string(),
-    short: s.string(),
-    long: s.string(),
-    created: s.number(),
-    lastEdit: s.number(),
-    owner: s.string(),
-  }).index("by_normalizedId", ["normalizedId"]),
+  links: defineTable(LinkDoc).index("by_normalizedId", ["normalizedId"]),
   stats: defineTable({
-    link: s.id("links"),
-    clicks: s.number(),
+    link: v.id("links"),
+    clicks: v.number(),
   }).index("byLink", ["link"]),
 });
