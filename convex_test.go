@@ -17,24 +17,21 @@ func clear(c *ConvexDB) {
 	c.mutation(&UdfExecution{Path: "clear", Args: map[string]interface{}{}, Format: "json"})
 }
 
-func getDbUrl() (string, error) {
+func getDbUrl() string {
 	envLocal, err := godotenv.Read(".env.local")
 	if err != nil {
-		return "", err
+		return "https://feeble-gull-946.convex.cloud"
 	}
 	url := envLocal["VITE_CONVEX_URL"]
 	if len(url) == 0 {
 		url = "https://feeble-gull-946.convex.cloud"
 	}
-	return url, nil
+	return url
 }
 
 // Test saving and loading links for SQLiteDB
 func Test_Convex_SaveLoadLinks(t *testing.T) {
-	url, err := getDbUrl()
-	if err != nil {
-		t.Error(err)
-	}
+	url := getDbUrl()
 	db := NewConvexDB(url, "test")
 	clear(db)
 	defer clear(db)
@@ -73,10 +70,7 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 
 // Test saving and loading stats for SQLiteDB
 func Test_Convex_SaveLoadStats(t *testing.T) {
-	url, err := getDbUrl()
-	if err != nil {
-		t.Error(err)
-	}
+	url := getDbUrl()
 	db := NewConvexDB(url, "test")
 	clear(db)
 	defer clear(db)
