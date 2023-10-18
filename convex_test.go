@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/joho/godotenv"
 )
 
 func clear(c *ConvexDB) {
@@ -18,7 +19,11 @@ func clear(c *ConvexDB) {
 
 // Test saving and loading links for SQLiteDB
 func Test_Convex_SaveLoadLinks(t *testing.T) {
-	db := NewConvexDB("https://savory-lyrebird-80.convex.cloud", "test")
+	envLocal, err := godotenv.Read(".env.local")
+	if err != nil {
+		t.Error(err)
+	}
+	db := NewConvexDB(envLocal["VITE_CONVEX_URL"], "test")
 	clear(db)
 	defer clear(db)
 
@@ -56,7 +61,11 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 
 // Test saving and loading stats for SQLiteDB
 func Test_Convex_SaveLoadStats(t *testing.T) {
-	db := NewConvexDB("https://savory-lyrebird-80.convex.cloud", "test")
+	envLocal, err := godotenv.Read(".env.local")
+	if err != nil {
+		t.Error(err)
+	}
+	db := NewConvexDB(envLocal["VITE_CONVEX_URL"], "test")
 	clear(db)
 	defer clear(db)
 
