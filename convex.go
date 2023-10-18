@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/fs"
 	"net/http"
 	"time"
@@ -18,9 +19,7 @@ type LinkDocument struct {
 	Owner    string  `json:"owner"`
 }
 
-type StatsMap struct {
-	Stats [][2]interface{} `json:"$map"`
-}
+type StatsMap = map[string]interface{}
 
 type ConvexDB struct {
 	url   string
@@ -28,8 +27,9 @@ type ConvexDB struct {
 }
 
 type UdfExecution struct {
-	Path string        `json:"path"`
-	Args []interface{} `json:"args"`
+	Path   string                 `json:"path"`
+	Args   map[string]interface{} `json:"args"`
+	Format string                 `json:"format"`
 }
 
 type ConvexResponse struct {
@@ -43,7 +43,7 @@ func NewConvexDB(url string, token string) *ConvexDB {
 }
 
 func (c *ConvexDB) mutation(args *UdfExecution) error {
-	args.Args = append(args.Args, c.token)
+	args.Args["token"] = c.token
 	url := fmt.Sprintf("%s/api/mutation", c.url)
 	encodedArgs, err := json.Marshal(args)
 	if err != nil {
@@ -73,7 +73,7 @@ func (c *ConvexDB) mutation(args *UdfExecution) error {
 }
 
 func (c *ConvexDB) query(args *UdfExecution) (json.RawMessage, error) {
-	args.Args = append(args.Args, c.token)
+	args.Args["token"] = c.token
 	url := fmt.Sprintf("%s/api/query", c.url)
 	encodedArgs, err := json.Marshal(args)
 	if err != nil {
@@ -84,7 +84,8 @@ func (c *ConvexDB) query(args *UdfExecution) (json.RawMessage, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("unexpected status code from Convex: %d", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("unexpected status code from Convex: %d: %s", resp.StatusCode, body)
 	}
 
 	defer resp.Body.Close()
@@ -103,7 +104,7 @@ func (c *ConvexDB) query(args *UdfExecution) (json.RawMessage, error) {
 }
 
 func (c *ConvexDB) LoadAll() ([]*Link, error) {
-	args := UdfExecution{"load:loadAll", []interface{}{}}
+	args := UdfExecution{"load:loadAll", map[string]interface{}{}, "json"}
 	resp, err := c.query(&args)
 	if err != nil {
 		return nil, err
@@ -130,7 +131,7 @@ func (c *ConvexDB) LoadAll() ([]*Link, error) {
 }
 
 func (c *ConvexDB) Load(short string) (*Link, error) {
-	args := UdfExecution{"load:loadOne", []interface{}{linkID(short)}}
+	args := UdfExecution{"load:loadOne", map[string]interface{}{"normalizedId": linkID(short)}, "json"}
 	resp, err := c.query(&args)
 	if err != nil {
 		return nil, err
@@ -166,12 +167,12 @@ func (c *ConvexDB) Save(link *Link) error {
 		LastEdit: float64(link.LastEdit.Unix()),
 		Owner:    link.Owner,
 	}
-	args := UdfExecution{"store", []interface{}{document}}
+	args := UdfExecution{"store", map[string]interface{}{"link": document}, "json"}
 	return c.mutation(&args)
 }
 
 func (c *ConvexDB) LoadStats() (ClickStats, error) {
-	args := UdfExecution{"stats:loadStats", []interface{}{}}
+	args := UdfExecution{"stats:loadStats", map[string]interface{}{}, "json"}
 	response, err := c.query(&args)
 	if err != nil {
 		return nil, err
@@ -184,12 +185,12 @@ func (c *ConvexDB) LoadStats() (ClickStats, error) {
 		return nil, err
 	}
 	clicks := make(ClickStats)
-	for _, entry := range stats.Stats {
-		num, err := entry[1].(json.Number).Float64()
+	for k, v := range stats {
+		num, err := v.(json.Number).Float64()
 		if err != nil {
 			return nil, err
 		}
-		clicks[entry[0].(string)] = int(num)
+		clicks[k] = int(num)
 	}
 	return clicks, nil
 }
@@ -199,6 +200,6 @@ func (c *ConvexDB) SaveStats(stats ClickStats) error {
 	for id, clicks := range stats {
 		mungedStats[linkID(id)] = clicks
 	}
-	args := UdfExecution{"stats:saveStats", []interface{}{mungedStats}}
+	args := UdfExecution{"stats:saveStats", map[string]interface{}{"stats": mungedStats}, "json"}
 	return c.mutation(&args)
 }

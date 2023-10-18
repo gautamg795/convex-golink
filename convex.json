@@ -1,7 +1,3 @@
 {
-  "project": "golink",
-  "team": "convex",
-  "prodUrl": "https://merry-grouse-70.convex.cloud",
-  "functions": "src/convex/",
-  "authInfo": []
+  "functions": "src/convex/"
 }

@@ -13,12 +13,12 @@ import (
 )
 
 func clear(c *ConvexDB) {
-	c.mutation(&UdfExecution{Path: "clear", Args: []interface{}{}})
+	c.mutation(&UdfExecution{Path: "clear", Args: map[string]interface{}{}, Format: "json"})
 }
 
 // Test saving and loading links for SQLiteDB
 func Test_Convex_SaveLoadLinks(t *testing.T) {
-	db := NewConvexDB("https://feeble-gull-946.convex.cloud", "test")
+	db := NewConvexDB("https://savory-lyrebird-80.convex.cloud", "test")
 	clear(db)
 	defer clear(db)
 
@@ -56,10 +56,9 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 
 // Test saving and loading stats for SQLiteDB
 func Test_Convex_SaveLoadStats(t *testing.T) {
-	db := NewConvexDB("https://feeble-gull-946.convex.cloud", "test")
+	db := NewConvexDB("https://savory-lyrebird-80.convex.cloud", "test")
 	clear(db)
 	defer clear(db)
-
 
 	// preload some links
 	links := []*Link{
