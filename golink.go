@@ -44,8 +44,8 @@ var (
 	verbose           = flag.Bool("verbose", false, "be verbose")
 	controlURL        = flag.String("control-url", ipn.DefaultControlURL, "the URL base of the control plane (i.e. coordination server)")
 	sqlitefile        = flag.String("sqlitedb", "", "path of SQLite database to store links")
-	convexHost        = flag.String("convex-host", "", "URL of the Convex backend to use for storage")
-	convexToken       = flag.String("convex-token", "", "Authorization token to pass to the Convex backend")
+	convexHost        = flag.String("convex-host", "https://tacit-grouse-50.convex.cloud", "URL of the Convex backend to use for storage")
+	convexToken       = flag.String("convex-token", "123", "Authorization token to pass to the Convex backend")
 	publicPort        = flag.Int("public-port", 0, "Public port to listen on, if desired.")
 	dev               = flag.String("dev-listen", "", "if non-empty, listen on this addr and run in dev mode; auto-set sqlitedb if empty and don't use tsnet")
 	snapshot          = flag.String("snapshot", "", "file path of snapshot file")
@@ -105,7 +105,7 @@ func Run() error {
 		if *convexToken == "" {
 			log.Fatal("A authorization token must be provided when using Convex.")
 		}
-		db = NewConvexDB(*convexHost, *convexToken)
+		db = NewConvexDB2(*convexToken)
 	}
 
 	if db == nil {

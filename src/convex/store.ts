@@ -4,6 +4,7 @@ import { LinkDoc } from "./schema";
 
 export default mutation({
   args: { link: v.object(LinkDoc), token: v.string() },
+  returns: v.null(),
   handler: async (ctx, { link, token }) => {
     if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
       throw new Error("Invalid authorization token");

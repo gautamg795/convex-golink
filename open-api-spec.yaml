@@ -1,0 +1,480 @@
+
+openapi: 3.0.3
+info:
+    title: Convex App - OpenAPI 3.0
+    version: 0.0.0
+servers:
+    - url: https://tacit-grouse-50.convex.cloud
+security:
+  - bearerAuth: []
+tags:
+    - name: query
+      description: Functions that read data
+    - name: mutation
+      description: Functions that write/update/delete data
+    - name: action
+      description: Functions that can make calls to external APIs
+paths:
+  
+      /api/run/clear/default:
+        post:
+          summary: Calls a mutation at the path clear.js:default
+          tags: 
+            - mutation
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Request_clear.default'
+            required: true
+          responses:
+            '200':
+              description: Convex executed your request and returned a result
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Response_clear.default'    
+            '400':
+              description: Failed operation
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+            '500':
+              description: Convex Internal Error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+  
+  
+      /api/run/load/loadOne:
+        post:
+          summary: Calls a query at the path load.js:loadOne
+          tags: 
+            - query
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Request_load.loadOne'
+            required: true
+          responses:
+            '200':
+              description: Convex executed your request and returned a result
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Response_load.loadOne'    
+            '400':
+              description: Failed operation
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+            '500':
+              description: Convex Internal Error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+  
+  
+      /api/run/load/loadAll:
+        post:
+          summary: Calls a query at the path load.js:loadAll
+          tags: 
+            - query
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Request_load.loadAll'
+            required: true
+          responses:
+            '200':
+              description: Convex executed your request and returned a result
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Response_load.loadAll'    
+            '400':
+              description: Failed operation
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+            '500':
+              description: Convex Internal Error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+  
+  
+      /api/run/stats/loadStats:
+        post:
+          summary: Calls a query at the path stats.js:loadStats
+          tags: 
+            - query
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Request_stats.loadStats'
+            required: true
+          responses:
+            '200':
+              description: Convex executed your request and returned a result
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Response_stats.loadStats'    
+            '400':
+              description: Failed operation
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+            '500':
+              description: Convex Internal Error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+  
+  
+      /api/run/stats/saveStats:
+        post:
+          summary: Calls a mutation at the path stats.js:saveStats
+          tags: 
+            - mutation
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Request_stats.saveStats'
+            required: true
+          responses:
+            '200':
+              description: Convex executed your request and returned a result
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Response_stats.saveStats'    
+            '400':
+              description: Failed operation
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+            '500':
+              description: Convex Internal Error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+  
+  
+      /api/run/store/default:
+        post:
+          summary: Calls a mutation at the path store.js:default
+          tags: 
+            - mutation
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Request_store.default'
+            required: true
+          responses:
+            '200':
+              description: Convex executed your request and returned a result
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Response_store.default'    
+            '400':
+              description: Failed operation
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+            '500':
+              description: Convex Internal Error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/FailedResponse'
+  
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Token of the format "Bearer {token}" for normal authentication and "Convex {token}" for admin tokens.
+  schemas:
+  
+      Request_clear.default:
+        type: object
+        required:
+          - args
+        properties:
+          args:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+  
+      Response_clear.default:
+        type: object
+        required:
+          - status
+        properties:
+          status: 
+            type: string
+            enum:
+              - "success"
+              - "error"
+          errorMessage:
+            type: string
+          errorData:
+            type: object
+          value:
+            type: string
+            nullable: true
+  
+  
+      Request_load.loadOne:
+        type: object
+        required:
+          - args
+        properties:
+          args:
+            type: object
+            required:
+              - normalizedId
+              - token
+            properties:
+              normalizedId:
+                type: string
+              token:
+                type: string
+  
+      Response_load.loadOne:
+        type: object
+        required:
+          - status
+        properties:
+          status: 
+            type: string
+            enum:
+              - "success"
+              - "error"
+          errorMessage:
+            type: string
+          errorData:
+            type: object
+          value:
+            type: object
+            required:
+              - created
+              - lastEdit
+              - long
+              - normalizedId
+              - owner
+              - short
+            properties:
+              created:
+                type: number
+              lastEdit:
+                type: number
+              long:
+                type: string
+              normalizedId:
+                type: string
+              owner:
+                type: string
+              short:
+                type: string
+            nullable: true
+  
+  
+      Request_load.loadAll:
+        type: object
+        required:
+          - args
+        properties:
+          args:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+  
+      Response_load.loadAll:
+        type: object
+        required:
+          - status
+        properties:
+          status: 
+            type: string
+            enum:
+              - "success"
+              - "error"
+          errorMessage:
+            type: string
+          errorData:
+            type: object
+          value:
+            type: array
+            items:
+              type: object
+              required:
+                - created
+                - lastEdit
+                - long
+                - normalizedId
+                - owner
+                - short
+              properties:
+                created:
+                  type: number
+                lastEdit:
+                  type: number
+                long:
+                  type: string
+                normalizedId:
+                  type: string
+                owner:
+                  type: string
+                short:
+                  type: string
+  
+  
+      Request_stats.loadStats:
+        type: object
+        required:
+          - args
+        properties:
+          args:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+  
+      Response_stats.loadStats:
+        type: object
+        required:
+          - status
+        properties:
+          status: 
+            type: string
+            enum:
+              - "success"
+              - "error"
+          errorMessage:
+            type: string
+          errorData:
+            type: object
+          value:
+            {}
+  
+  
+      Request_stats.saveStats:
+        type: object
+        required:
+          - args
+        properties:
+          args:
+            type: object
+            required:
+              - stats
+              - token
+            properties:
+              stats:
+                type: object
+              token:
+                type: string
+  
+      Response_stats.saveStats:
+        type: object
+        required:
+          - status
+        properties:
+          status: 
+            type: string
+            enum:
+              - "success"
+              - "error"
+          errorMessage:
+            type: string
+          errorData:
+            type: object
+          value:
+            type: string
+            nullable: true
+  
+  
+      Request_store.default:
+        type: object
+        required:
+          - args
+        properties:
+          args:
+            type: object
+            required:
+              - link
+              - token
+            properties:
+              link:
+                type: object
+                required:
+                  - created
+                  - lastEdit
+                  - long
+                  - normalizedId
+                  - owner
+                  - short
+                properties:
+                  created:
+                    type: number
+                  lastEdit:
+                    type: number
+                  long:
+                    type: string
+                  normalizedId:
+                    type: string
+                  owner:
+                    type: string
+                  short:
+                    type: string
+              token:
+                type: string
+  
+      Response_store.default:
+        type: object
+        required:
+          - status
+        properties:
+          status: 
+            type: string
+            enum:
+              - "success"
+              - "error"
+          errorMessage:
+            type: string
+          errorData:
+            type: object
+          value:
+            type: string
+            nullable: true
+  
+      FailedResponse:
+        type: object
+        properties: {}

@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 export default mutation({
   args: { token: v.string() },
+  returns: v.null(),
   handler: async (ctx, { token }) => {
     if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
       throw new Error("Invalid authorization token");
