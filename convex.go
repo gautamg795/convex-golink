@@ -67,7 +67,7 @@ func (c *ConvexDB) mutation(args *UdfExecution) error {
 		return nil
 	}
 	if convexResponse.Status == "error" {
-		return fmt.Errorf("error from Convex: %s", convexResponse.ErrorMessage)
+		return fmt.Errorf("erroer from Convex: %s", convexResponse.ErrorMessage)
 	}
 	return fmt.Errorf("unexpected response from Convex: %s", resp.Body)
 }

@@ -280,6 +280,8 @@ components:
           value:
             type: object
             required:
+              - _creationTime
+              - _id
               - created
               - lastEdit
               - long
@@ -287,6 +289,11 @@ components:
               - owner
               - short
             properties:
+              _creationTime:
+                type: number
+              _id:
+                type: string
+                description: ID from table "links"
               created:
                 type: number
               lastEdit:
@@ -334,6 +341,8 @@ components:
             items:
               type: object
               required:
+                - _creationTime
+                - _id
                 - created
                 - lastEdit
                 - long
@@ -341,6 +350,11 @@ components:
                 - owner
                 - short
               properties:
+                _creationTime:
+                  type: number
+                _id:
+                  type: string
+                  description: ID from table "links"
                 created:
                   type: number
                 lastEdit:

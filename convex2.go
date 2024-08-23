@@ -2,7 +2,7 @@ package golink
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 	"io/fs"
 	"time"
 
@@ -23,12 +23,11 @@ func NewConvexDB2(token string) *ConvexDB2 {
 func (c *ConvexDB2) LoadAll() ([]*Link, error) {
 	request := *convexclient.NewRequestLoadLoadAll(*convexclient.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadAllPost(context.Background()).RequestLoadLoadAll(request).Execute()
-	if err != nil {
-		return nil, err
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	if validationErr != nil {
+		return nil, validationErr
 	}
-	if httpRes.StatusCode != 200 {
-		return nil, err
-	}
+
 	var links []*Link
 	for _, doc := range resp.Value {
 		link := Link{
@@ -47,18 +46,16 @@ func (c *ConvexDB2) LoadAll() ([]*Link, error) {
 func (c *ConvexDB2) Load(short string) (*Link, error) {
 	request := *convexclient.NewRequestLoadLoadOne(*convexclient.NewRequestLoadLoadOneArgs(short, c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadOnePost(context.Background()).RequestLoadLoadOne(request).Execute()
-	if err != nil {
-		return nil, err
-	}
-	if httpRes.StatusCode != 200 {
-		return nil, err
-	}
-	if !resp.HasValue() {
-		err := fs.ErrNotExist
-		return nil, err
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	if validationErr != nil {
+		return nil, validationErr
 	}
 
 	linkDoc := resp.Value.Get()
+	if linkDoc == nil {
+		err := fs.ErrNotExist
+		return nil, err
+	}
 	link := Link{
 		Short:    linkDoc.Short,
 		Long:     linkDoc.Long,
@@ -70,7 +67,7 @@ func (c *ConvexDB2) Load(short string) (*Link, error) {
 }
 
 func (c *ConvexDB2) Save(link *Link) error {
-	linkDoc := convexclient.ResponseLoadLoadAllValueInner{
+	linkDoc := convexclient.RequestStoreDefaultArgsLink{
 		Short:        link.Short,
 		Long:         link.Long,
 		Owner:        link.Owner,
@@ -79,34 +76,32 @@ func (c *ConvexDB2) Save(link *Link) error {
 		LastEdit:     float32(link.LastEdit.Unix()),
 	}
 	request := *convexclient.NewRequestStoreDefault(*convexclient.NewRequestStoreDefaultArgs(linkDoc, c.token))
-	_, httpRes, err := c.client.MutationAPI.ApiRunStoreDefaultPost(context.Background()).RequestStoreDefault(request).Execute()
+	resp, httpRes, err := c.client.MutationAPI.ApiRunStoreDefaultPost(context.Background()).RequestStoreDefault(request).Execute()
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	if validationErr != nil {
+		return validationErr
+	}
 
-	if err != nil {
-		return err
-	}
-	if httpRes.StatusCode != 200 {
-		return err
-	}
 	return nil
 }
 
 func (c *ConvexDB2) LoadStats() (ClickStats, error) {
 	request := *convexclient.NewRequestStatsLoadStats(*convexclient.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunStatsLoadStatsPost(context.Background()).RequestStatsLoadStats(request).Execute()
-	if err != nil {
-		return nil, err
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	if validationErr != nil {
+		return nil, validationErr
 	}
-	if httpRes.StatusCode != 200 {
-		return nil, err
-	}
+
 	value, ok := resp.Value.(map[string]interface{})
 	if !ok {
-		return nil, fs.ErrNotExist
+		return nil, fmt.Errorf("unexpected response from convex: %v", resp)
 	}
+
 	clicks := make(ClickStats)
 	for k, v := range value {
-		num, err := v.(json.Number).Float64()
-		if err != nil {
+		num, ok := v.(float64)
+		if !ok {
 			return nil, err
 		}
 		clicks[k] = int(num)
@@ -121,7 +116,11 @@ func (c *ConvexDB2) SaveStats(stats ClickStats) error {
 	}
 
 	request := *convexclient.NewRequestStatsSaveStats(*convexclient.NewRequestStatsSaveStatsArgs(map[string]interface{}{"stats": mungedStats}, c.token))
-	_, httpRes, err := c.client.MutationAPI.ApiRunStatsSaveStatsPost(context.Background()).RequestStatsSaveStats(request).Execute()
+	resp, httpRes, err := c.client.MutationAPI.ApiRunStatsSaveStatsPost(context.Background()).RequestStatsSaveStats(request).Execute()
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	if validationErr != nil {
+		return validationErr
+	}
 
 	if err != nil {
 		return err
@@ -129,5 +128,19 @@ func (c *ConvexDB2) SaveStats(stats ClickStats) error {
 	if httpRes.StatusCode != 200 {
 		return err
 	}
+	return nil
+}
+
+func validateResponse(statusCode int, err error, convexStatus string) error {
+	if err != nil {
+		return err
+	}
+	if statusCode != 200 {
+		return err
+	}
+	if convexStatus == "error" {
+		return fmt.Errorf("error from convex")
+	}
+
 	return nil
 }

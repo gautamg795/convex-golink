@@ -157,7 +157,7 @@ import (
 )
 
 func main() {
-	requestStoreDefault := *openapiclient.NewRequestStoreDefault(*openapiclient.NewRequestStoreDefaultArgs(*openapiclient.NewResponseLoadLoadAllValueInner(float32(123), float32(123), "Long_example", "NormalizedId_example", "Owner_example", "Short_example"), "Token_example")) // RequestStoreDefault | 
+	requestStoreDefault := *openapiclient.NewRequestStoreDefault(*openapiclient.NewRequestStoreDefaultArgs(*openapiclient.NewRequestStoreDefaultArgsLink(float32(123), float32(123), "Long_example", "NormalizedId_example", "Owner_example", "Short_example"), "Token_example")) // RequestStoreDefault | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)

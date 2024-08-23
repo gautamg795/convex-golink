@@ -21,6 +21,9 @@ var _ MappedNullable = &ResponseLoadLoadAllValueInner{}
 
 // ResponseLoadLoadAllValueInner struct for ResponseLoadLoadAllValueInner
 type ResponseLoadLoadAllValueInner struct {
+	CreationTime float32 `json:"_creationTime"`
+	// ID from table \"links\"
+	Id string `json:"_id"`
 	Created float32 `json:"created"`
 	LastEdit float32 `json:"lastEdit"`
 	Long string `json:"long"`
@@ -35,8 +38,10 @@ type _ResponseLoadLoadAllValueInner ResponseLoadLoadAllValueInner
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewResponseLoadLoadAllValueInner(created float32, lastEdit float32, long string, normalizedId string, owner string, short string) *ResponseLoadLoadAllValueInner {
+func NewResponseLoadLoadAllValueInner(creationTime float32, id string, created float32, lastEdit float32, long string, normalizedId string, owner string, short string) *ResponseLoadLoadAllValueInner {
 	this := ResponseLoadLoadAllValueInner{}
+	this.CreationTime = creationTime
+	this.Id = id
 	this.Created = created
 	this.LastEdit = lastEdit
 	this.Long = long
@@ -52,6 +57,54 @@ func NewResponseLoadLoadAllValueInner(created float32, lastEdit float32, long st
 func NewResponseLoadLoadAllValueInnerWithDefaults() *ResponseLoadLoadAllValueInner {
 	this := ResponseLoadLoadAllValueInner{}
 	return &this
+}
+
+// GetCreationTime returns the CreationTime field value
+func (o *ResponseLoadLoadAllValueInner) GetCreationTime() float32 {
+	if o == nil {
+		var ret float32
+		return ret
+	}
+
+	return o.CreationTime
+}
+
+// GetCreationTimeOk returns a tuple with the CreationTime field value
+// and a boolean to check if the value has been set.
+func (o *ResponseLoadLoadAllValueInner) GetCreationTimeOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreationTime, true
+}
+
+// SetCreationTime sets field value
+func (o *ResponseLoadLoadAllValueInner) SetCreationTime(v float32) {
+	o.CreationTime = v
+}
+
+// GetId returns the Id field value
+func (o *ResponseLoadLoadAllValueInner) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *ResponseLoadLoadAllValueInner) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
+
+// SetId sets field value
+func (o *ResponseLoadLoadAllValueInner) SetId(v string) {
+	o.Id = v
 }
 
 // GetCreated returns the Created field value
@@ -208,6 +261,8 @@ func (o ResponseLoadLoadAllValueInner) MarshalJSON() ([]byte, error) {
 
 func (o ResponseLoadLoadAllValueInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["_creationTime"] = o.CreationTime
+	toSerialize["_id"] = o.Id
 	toSerialize["created"] = o.Created
 	toSerialize["lastEdit"] = o.LastEdit
 	toSerialize["long"] = o.Long
@@ -222,6 +277,8 @@ func (o *ResponseLoadLoadAllValueInner) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"_creationTime",
+		"_id",
 		"created",
 		"lastEdit",
 		"long",

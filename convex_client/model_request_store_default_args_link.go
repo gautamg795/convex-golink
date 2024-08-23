@@ -16,14 +16,11 @@ import (
 	"fmt"
 )
 
-// checks if the ResponseLoadLoadOneValue type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ResponseLoadLoadOneValue{}
+// checks if the RequestStoreDefaultArgsLink type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &RequestStoreDefaultArgsLink{}
 
-// ResponseLoadLoadOneValue struct for ResponseLoadLoadOneValue
-type ResponseLoadLoadOneValue struct {
-	CreationTime float32 `json:"_creationTime"`
-	// ID from table \"links\"
-	Id string `json:"_id"`
+// RequestStoreDefaultArgsLink struct for RequestStoreDefaultArgsLink
+type RequestStoreDefaultArgsLink struct {
 	Created float32 `json:"created"`
 	LastEdit float32 `json:"lastEdit"`
 	Long string `json:"long"`
@@ -32,16 +29,14 @@ type ResponseLoadLoadOneValue struct {
 	Short string `json:"short"`
 }
 
-type _ResponseLoadLoadOneValue ResponseLoadLoadOneValue
+type _RequestStoreDefaultArgsLink RequestStoreDefaultArgsLink
 
-// NewResponseLoadLoadOneValue instantiates a new ResponseLoadLoadOneValue object
+// NewRequestStoreDefaultArgsLink instantiates a new RequestStoreDefaultArgsLink object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewResponseLoadLoadOneValue(creationTime float32, id string, created float32, lastEdit float32, long string, normalizedId string, owner string, short string) *ResponseLoadLoadOneValue {
-	this := ResponseLoadLoadOneValue{}
-	this.CreationTime = creationTime
-	this.Id = id
+func NewRequestStoreDefaultArgsLink(created float32, lastEdit float32, long string, normalizedId string, owner string, short string) *RequestStoreDefaultArgsLink {
+	this := RequestStoreDefaultArgsLink{}
 	this.Created = created
 	this.LastEdit = lastEdit
 	this.Long = long
@@ -51,64 +46,16 @@ func NewResponseLoadLoadOneValue(creationTime float32, id string, created float3
 	return &this
 }
 
-// NewResponseLoadLoadOneValueWithDefaults instantiates a new ResponseLoadLoadOneValue object
+// NewRequestStoreDefaultArgsLinkWithDefaults instantiates a new RequestStoreDefaultArgsLink object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewResponseLoadLoadOneValueWithDefaults() *ResponseLoadLoadOneValue {
-	this := ResponseLoadLoadOneValue{}
+func NewRequestStoreDefaultArgsLinkWithDefaults() *RequestStoreDefaultArgsLink {
+	this := RequestStoreDefaultArgsLink{}
 	return &this
 }
 
-// GetCreationTime returns the CreationTime field value
-func (o *ResponseLoadLoadOneValue) GetCreationTime() float32 {
-	if o == nil {
-		var ret float32
-		return ret
-	}
-
-	return o.CreationTime
-}
-
-// GetCreationTimeOk returns a tuple with the CreationTime field value
-// and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetCreationTimeOk() (*float32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CreationTime, true
-}
-
-// SetCreationTime sets field value
-func (o *ResponseLoadLoadOneValue) SetCreationTime(v float32) {
-	o.CreationTime = v
-}
-
-// GetId returns the Id field value
-func (o *ResponseLoadLoadOneValue) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
-
-// SetId sets field value
-func (o *ResponseLoadLoadOneValue) SetId(v string) {
-	o.Id = v
-}
-
 // GetCreated returns the Created field value
-func (o *ResponseLoadLoadOneValue) GetCreated() float32 {
+func (o *RequestStoreDefaultArgsLink) GetCreated() float32 {
 	if o == nil {
 		var ret float32
 		return ret
@@ -119,7 +66,7 @@ func (o *ResponseLoadLoadOneValue) GetCreated() float32 {
 
 // GetCreatedOk returns a tuple with the Created field value
 // and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetCreatedOk() (*float32, bool) {
+func (o *RequestStoreDefaultArgsLink) GetCreatedOk() (*float32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -127,12 +74,12 @@ func (o *ResponseLoadLoadOneValue) GetCreatedOk() (*float32, bool) {
 }
 
 // SetCreated sets field value
-func (o *ResponseLoadLoadOneValue) SetCreated(v float32) {
+func (o *RequestStoreDefaultArgsLink) SetCreated(v float32) {
 	o.Created = v
 }
 
 // GetLastEdit returns the LastEdit field value
-func (o *ResponseLoadLoadOneValue) GetLastEdit() float32 {
+func (o *RequestStoreDefaultArgsLink) GetLastEdit() float32 {
 	if o == nil {
 		var ret float32
 		return ret
@@ -143,7 +90,7 @@ func (o *ResponseLoadLoadOneValue) GetLastEdit() float32 {
 
 // GetLastEditOk returns a tuple with the LastEdit field value
 // and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetLastEditOk() (*float32, bool) {
+func (o *RequestStoreDefaultArgsLink) GetLastEditOk() (*float32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -151,12 +98,12 @@ func (o *ResponseLoadLoadOneValue) GetLastEditOk() (*float32, bool) {
 }
 
 // SetLastEdit sets field value
-func (o *ResponseLoadLoadOneValue) SetLastEdit(v float32) {
+func (o *RequestStoreDefaultArgsLink) SetLastEdit(v float32) {
 	o.LastEdit = v
 }
 
 // GetLong returns the Long field value
-func (o *ResponseLoadLoadOneValue) GetLong() string {
+func (o *RequestStoreDefaultArgsLink) GetLong() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -167,7 +114,7 @@ func (o *ResponseLoadLoadOneValue) GetLong() string {
 
 // GetLongOk returns a tuple with the Long field value
 // and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetLongOk() (*string, bool) {
+func (o *RequestStoreDefaultArgsLink) GetLongOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -175,12 +122,12 @@ func (o *ResponseLoadLoadOneValue) GetLongOk() (*string, bool) {
 }
 
 // SetLong sets field value
-func (o *ResponseLoadLoadOneValue) SetLong(v string) {
+func (o *RequestStoreDefaultArgsLink) SetLong(v string) {
 	o.Long = v
 }
 
 // GetNormalizedId returns the NormalizedId field value
-func (o *ResponseLoadLoadOneValue) GetNormalizedId() string {
+func (o *RequestStoreDefaultArgsLink) GetNormalizedId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -191,7 +138,7 @@ func (o *ResponseLoadLoadOneValue) GetNormalizedId() string {
 
 // GetNormalizedIdOk returns a tuple with the NormalizedId field value
 // and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetNormalizedIdOk() (*string, bool) {
+func (o *RequestStoreDefaultArgsLink) GetNormalizedIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -199,12 +146,12 @@ func (o *ResponseLoadLoadOneValue) GetNormalizedIdOk() (*string, bool) {
 }
 
 // SetNormalizedId sets field value
-func (o *ResponseLoadLoadOneValue) SetNormalizedId(v string) {
+func (o *RequestStoreDefaultArgsLink) SetNormalizedId(v string) {
 	o.NormalizedId = v
 }
 
 // GetOwner returns the Owner field value
-func (o *ResponseLoadLoadOneValue) GetOwner() string {
+func (o *RequestStoreDefaultArgsLink) GetOwner() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -215,7 +162,7 @@ func (o *ResponseLoadLoadOneValue) GetOwner() string {
 
 // GetOwnerOk returns a tuple with the Owner field value
 // and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetOwnerOk() (*string, bool) {
+func (o *RequestStoreDefaultArgsLink) GetOwnerOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -223,12 +170,12 @@ func (o *ResponseLoadLoadOneValue) GetOwnerOk() (*string, bool) {
 }
 
 // SetOwner sets field value
-func (o *ResponseLoadLoadOneValue) SetOwner(v string) {
+func (o *RequestStoreDefaultArgsLink) SetOwner(v string) {
 	o.Owner = v
 }
 
 // GetShort returns the Short field value
-func (o *ResponseLoadLoadOneValue) GetShort() string {
+func (o *RequestStoreDefaultArgsLink) GetShort() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -239,7 +186,7 @@ func (o *ResponseLoadLoadOneValue) GetShort() string {
 
 // GetShortOk returns a tuple with the Short field value
 // and a boolean to check if the value has been set.
-func (o *ResponseLoadLoadOneValue) GetShortOk() (*string, bool) {
+func (o *RequestStoreDefaultArgsLink) GetShortOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -247,11 +194,11 @@ func (o *ResponseLoadLoadOneValue) GetShortOk() (*string, bool) {
 }
 
 // SetShort sets field value
-func (o *ResponseLoadLoadOneValue) SetShort(v string) {
+func (o *RequestStoreDefaultArgsLink) SetShort(v string) {
 	o.Short = v
 }
 
-func (o ResponseLoadLoadOneValue) MarshalJSON() ([]byte, error) {
+func (o RequestStoreDefaultArgsLink) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -259,10 +206,8 @@ func (o ResponseLoadLoadOneValue) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ResponseLoadLoadOneValue) ToMap() (map[string]interface{}, error) {
+func (o RequestStoreDefaultArgsLink) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["_creationTime"] = o.CreationTime
-	toSerialize["_id"] = o.Id
 	toSerialize["created"] = o.Created
 	toSerialize["lastEdit"] = o.LastEdit
 	toSerialize["long"] = o.Long
@@ -272,13 +217,11 @@ func (o ResponseLoadLoadOneValue) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *ResponseLoadLoadOneValue) UnmarshalJSON(data []byte) (err error) {
+func (o *RequestStoreDefaultArgsLink) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"_creationTime",
-		"_id",
 		"created",
 		"lastEdit",
 		"long",
@@ -301,53 +244,53 @@ func (o *ResponseLoadLoadOneValue) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varResponseLoadLoadOneValue := _ResponseLoadLoadOneValue{}
+	varRequestStoreDefaultArgsLink := _RequestStoreDefaultArgsLink{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varResponseLoadLoadOneValue)
+	err = decoder.Decode(&varRequestStoreDefaultArgsLink)
 
 	if err != nil {
 		return err
 	}
 
-	*o = ResponseLoadLoadOneValue(varResponseLoadLoadOneValue)
+	*o = RequestStoreDefaultArgsLink(varRequestStoreDefaultArgsLink)
 
 	return err
 }
 
-type NullableResponseLoadLoadOneValue struct {
-	value *ResponseLoadLoadOneValue
+type NullableRequestStoreDefaultArgsLink struct {
+	value *RequestStoreDefaultArgsLink
 	isSet bool
 }
 
-func (v NullableResponseLoadLoadOneValue) Get() *ResponseLoadLoadOneValue {
+func (v NullableRequestStoreDefaultArgsLink) Get() *RequestStoreDefaultArgsLink {
 	return v.value
 }
 
-func (v *NullableResponseLoadLoadOneValue) Set(val *ResponseLoadLoadOneValue) {
+func (v *NullableRequestStoreDefaultArgsLink) Set(val *RequestStoreDefaultArgsLink) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableResponseLoadLoadOneValue) IsSet() bool {
+func (v NullableRequestStoreDefaultArgsLink) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableResponseLoadLoadOneValue) Unset() {
+func (v *NullableRequestStoreDefaultArgsLink) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableResponseLoadLoadOneValue(val *ResponseLoadLoadOneValue) *NullableResponseLoadLoadOneValue {
-	return &NullableResponseLoadLoadOneValue{value: val, isSet: true}
+func NewNullableRequestStoreDefaultArgsLink(val *RequestStoreDefaultArgsLink) *NullableRequestStoreDefaultArgsLink {
+	return &NullableRequestStoreDefaultArgsLink{value: val, isSet: true}
 }
 
-func (v NullableResponseLoadLoadOneValue) MarshalJSON() ([]byte, error) {
+func (v NullableRequestStoreDefaultArgsLink) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableResponseLoadLoadOneValue) UnmarshalJSON(src []byte) error {
+func (v *NullableRequestStoreDefaultArgsLink) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

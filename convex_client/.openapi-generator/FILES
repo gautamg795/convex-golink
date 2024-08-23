@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -19,6 +18,7 @@ docs/RequestStatsSaveStats.md
 docs/RequestStatsSaveStatsArgs.md
 docs/RequestStoreDefault.md
 docs/RequestStoreDefaultArgs.md
+docs/RequestStoreDefaultArgsLink.md
 docs/ResponseClearDefault.md
 docs/ResponseLoadLoadAll.md
 docs/ResponseLoadLoadAllValueInner.md
@@ -40,6 +40,7 @@ model_request_stats_save_stats.go
 model_request_stats_save_stats_args.go
 model_request_store_default.go
 model_request_store_default_args.go
+model_request_store_default_args_link.go
 model_response_clear_default.go
 model_response_load_load_all.go
 model_response_load_load_all_value_inner.go
@@ -49,6 +50,4 @@ model_response_stats_load_stats.go
 model_response_stats_save_stats.go
 model_response_store_default.go
 response.go
-test/api_mutation_test.go
-test/api_query_test.go
 utils.go

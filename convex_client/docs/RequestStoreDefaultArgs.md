@@ -4,14 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Link** | [**ResponseLoadLoadAllValueInner**](ResponseLoadLoadAllValueInner.md) |  | 
+**Link** | [**RequestStoreDefaultArgsLink**](RequestStoreDefaultArgsLink.md) |  | 
 **Token** | **string** |  | 
 
 ## Methods
 
 ### NewRequestStoreDefaultArgs
 
-`func NewRequestStoreDefaultArgs(link ResponseLoadLoadAllValueInner, token string, ) *RequestStoreDefaultArgs`
+`func NewRequestStoreDefaultArgs(link RequestStoreDefaultArgsLink, token string, ) *RequestStoreDefaultArgs`
 
 NewRequestStoreDefaultArgs instantiates a new RequestStoreDefaultArgs object
 This constructor will assign default values to properties that have it defined,
@@ -28,20 +28,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetLink
 
-`func (o *RequestStoreDefaultArgs) GetLink() ResponseLoadLoadAllValueInner`
+`func (o *RequestStoreDefaultArgs) GetLink() RequestStoreDefaultArgsLink`
 
 GetLink returns the Link field if non-nil, zero value otherwise.
 
 ### GetLinkOk
 
-`func (o *RequestStoreDefaultArgs) GetLinkOk() (*ResponseLoadLoadAllValueInner, bool)`
+`func (o *RequestStoreDefaultArgs) GetLinkOk() (*RequestStoreDefaultArgsLink, bool)`
 
 GetLinkOk returns a tuple with the Link field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLink
 
-`func (o *RequestStoreDefaultArgs) SetLink(v ResponseLoadLoadAllValueInner)`
+`func (o *RequestStoreDefaultArgs) SetLink(v RequestStoreDefaultArgsLink)`
 
 SetLink sets Link field to given value.
 

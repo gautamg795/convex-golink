@@ -98,6 +98,7 @@ Class | Method | HTTP request | Description
  - [RequestStatsSaveStatsArgs](docs/RequestStatsSaveStatsArgs.md)
  - [RequestStoreDefault](docs/RequestStoreDefault.md)
  - [RequestStoreDefaultArgs](docs/RequestStoreDefaultArgs.md)
+ - [RequestStoreDefaultArgsLink](docs/RequestStoreDefaultArgsLink.md)
  - [ResponseClearDefault](docs/ResponseClearDefault.md)
  - [ResponseLoadLoadAll](docs/ResponseLoadLoadAll.md)
  - [ResponseLoadLoadAllValueInner](docs/ResponseLoadLoadAllValueInner.md)

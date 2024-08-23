@@ -21,7 +21,7 @@ var _ MappedNullable = &RequestStoreDefaultArgs{}
 
 // RequestStoreDefaultArgs struct for RequestStoreDefaultArgs
 type RequestStoreDefaultArgs struct {
-	Link ResponseLoadLoadAllValueInner `json:"link"`
+	Link RequestStoreDefaultArgsLink `json:"link"`
 	Token string `json:"token"`
 }
 
@@ -31,7 +31,7 @@ type _RequestStoreDefaultArgs RequestStoreDefaultArgs
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRequestStoreDefaultArgs(link ResponseLoadLoadAllValueInner, token string) *RequestStoreDefaultArgs {
+func NewRequestStoreDefaultArgs(link RequestStoreDefaultArgsLink, token string) *RequestStoreDefaultArgs {
 	this := RequestStoreDefaultArgs{}
 	this.Link = link
 	this.Token = token
@@ -47,9 +47,9 @@ func NewRequestStoreDefaultArgsWithDefaults() *RequestStoreDefaultArgs {
 }
 
 // GetLink returns the Link field value
-func (o *RequestStoreDefaultArgs) GetLink() ResponseLoadLoadAllValueInner {
+func (o *RequestStoreDefaultArgs) GetLink() RequestStoreDefaultArgsLink {
 	if o == nil {
-		var ret ResponseLoadLoadAllValueInner
+		var ret RequestStoreDefaultArgsLink
 		return ret
 	}
 
@@ -58,7 +58,7 @@ func (o *RequestStoreDefaultArgs) GetLink() ResponseLoadLoadAllValueInner {
 
 // GetLinkOk returns a tuple with the Link field value
 // and a boolean to check if the value has been set.
-func (o *RequestStoreDefaultArgs) GetLinkOk() (*ResponseLoadLoadAllValueInner, bool) {
+func (o *RequestStoreDefaultArgs) GetLinkOk() (*RequestStoreDefaultArgsLink, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -66,7 +66,7 @@ func (o *RequestStoreDefaultArgs) GetLinkOk() (*ResponseLoadLoadAllValueInner, b
 }
 
 // SetLink sets field value
-func (o *RequestStoreDefaultArgs) SetLink(v ResponseLoadLoadAllValueInner) {
+func (o *RequestStoreDefaultArgs) SetLink(v RequestStoreDefaultArgsLink) {
 	o.Link = v
 }
 

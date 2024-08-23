@@ -4,6 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**CreationTime** | **float32** |  | 
+**Id** | **string** | ID from table \&quot;links\&quot; | 
 **Created** | **float32** |  | 
 **LastEdit** | **float32** |  | 
 **Long** | **string** |  | 
@@ -15,7 +17,7 @@ Name | Type | Description | Notes
 
 ### NewResponseLoadLoadOneValue
 
-`func NewResponseLoadLoadOneValue(created float32, lastEdit float32, long string, normalizedId string, owner string, short string, ) *ResponseLoadLoadOneValue`
+`func NewResponseLoadLoadOneValue(creationTime float32, id string, created float32, lastEdit float32, long string, normalizedId string, owner string, short string, ) *ResponseLoadLoadOneValue`
 
 NewResponseLoadLoadOneValue instantiates a new ResponseLoadLoadOneValue object
 This constructor will assign default values to properties that have it defined,
@@ -29,6 +31,46 @@ will change when the set of required properties is changed
 NewResponseLoadLoadOneValueWithDefaults instantiates a new ResponseLoadLoadOneValue object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetCreationTime
+
+`func (o *ResponseLoadLoadOneValue) GetCreationTime() float32`
+
+GetCreationTime returns the CreationTime field if non-nil, zero value otherwise.
+
+### GetCreationTimeOk
+
+`func (o *ResponseLoadLoadOneValue) GetCreationTimeOk() (*float32, bool)`
+
+GetCreationTimeOk returns a tuple with the CreationTime field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCreationTime
+
+`func (o *ResponseLoadLoadOneValue) SetCreationTime(v float32)`
+
+SetCreationTime sets CreationTime field to given value.
+
+
+### GetId
+
+`func (o *ResponseLoadLoadOneValue) GetId() string`
+
+GetId returns the Id field if non-nil, zero value otherwise.
+
+### GetIdOk
+
+`func (o *ResponseLoadLoadOneValue) GetIdOk() (*string, bool)`
+
+GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetId
+
+`func (o *ResponseLoadLoadOneValue) SetId(v string)`
+
+SetId sets Id field to given value.
+
 
 ### GetCreated
 
