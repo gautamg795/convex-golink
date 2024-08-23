@@ -13,9 +13,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func clear(c *ConvexDB) {
-	c.mutation(&UdfExecution{Path: "clear", Args: map[string]interface{}{}, Format: "json"})
-}
+// func clear(c *ConvexDB) {
+// 	c.mutation(&UdfExecution{Path: "clear", Args: map[string]interface{}{}, Format: "json"})
+// }
 
 func getDbUrl() string {
 	envLocal, err := godotenv.Read(".env.local")
@@ -32,7 +32,7 @@ func getDbUrl() string {
 // Test saving and loading links for SQLiteDB
 func Test_Convex_SaveLoadLinks(t *testing.T) {
 	url := getDbUrl()
-	db := NewConvexDB(url, "test")
+	db := NewConvexDB(&url, "test")
 	clear(db)
 	defer clear(db)
 
@@ -71,7 +71,7 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 // Test saving and loading stats for SQLiteDB
 func Test_Convex_SaveLoadStats(t *testing.T) {
 	url := getDbUrl()
-	db := NewConvexDB(url, "test")
+	db := NewConvexDB(&url, "test")
 	clear(db)
 	defer clear(db)
 

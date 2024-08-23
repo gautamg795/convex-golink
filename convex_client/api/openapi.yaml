@@ -3,7 +3,12 @@ info:
   title: Convex App - OpenAPI 3.0
   version: 0.0.0
 servers:
-- url: https://tacit-grouse-50.convex.cloud
+- description: Convex App API
+  url: "{hostUrl}"
+  variables:
+    hostUrl:
+      default: https://tacit-grouse-50.convex.cloud
+      description: The host URL of the Convex App API
 security:
 - bearerAuth: []
 tags:

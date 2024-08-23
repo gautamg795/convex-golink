@@ -9,18 +9,26 @@ import (
 	convexclient "github.com/jordanhunt22/golink_convex_client"
 )
 
-type ConvexDB2 struct {
+type ConvexDB struct {
 	token  string
 	client *convexclient.APIClient
 }
 
-func NewConvexDB2(token string) *ConvexDB2 {
-	configuration := convexclient.NewConfiguration()
-	client := convexclient.NewAPIClient(configuration)
-	return &ConvexDB2{token: token, client: client}
+func NewConvexDB(host *string, token string) *ConvexDB {
+	config := convexclient.NewConfiguration()
+	if host != nil {
+		config.Servers = convexclient.ServerConfigurations{
+			{
+				URL:         *host,
+				Description: "Convex URL that serves requests",
+			},
+		}
+	}
+	client := convexclient.NewAPIClient(config)
+	return &ConvexDB{token: token, client: client}
 }
 
-func (c *ConvexDB2) LoadAll() ([]*Link, error) {
+func (c *ConvexDB) LoadAll() ([]*Link, error) {
 	request := *convexclient.NewRequestLoadLoadAll(*convexclient.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadAllPost(context.Background()).RequestLoadLoadAll(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
@@ -43,7 +51,7 @@ func (c *ConvexDB2) LoadAll() ([]*Link, error) {
 	return links, nil
 }
 
-func (c *ConvexDB2) Load(short string) (*Link, error) {
+func (c *ConvexDB) Load(short string) (*Link, error) {
 	request := *convexclient.NewRequestLoadLoadOne(*convexclient.NewRequestLoadLoadOneArgs(short, c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadOnePost(context.Background()).RequestLoadLoadOne(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
@@ -66,7 +74,7 @@ func (c *ConvexDB2) Load(short string) (*Link, error) {
 	return &link, nil
 }
 
-func (c *ConvexDB2) Save(link *Link) error {
+func (c *ConvexDB) Save(link *Link) error {
 	linkDoc := convexclient.RequestStoreDefaultArgsLink{
 		Short:        link.Short,
 		Long:         link.Long,
@@ -85,7 +93,7 @@ func (c *ConvexDB2) Save(link *Link) error {
 	return nil
 }
 
-func (c *ConvexDB2) LoadStats() (ClickStats, error) {
+func (c *ConvexDB) LoadStats() (ClickStats, error) {
 	request := *convexclient.NewRequestStatsLoadStats(*convexclient.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunStatsLoadStatsPost(context.Background()).RequestStatsLoadStats(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
@@ -109,7 +117,7 @@ func (c *ConvexDB2) LoadStats() (ClickStats, error) {
 	return clicks, nil
 }
 
-func (c *ConvexDB2) SaveStats(stats ClickStats) error {
+func (c *ConvexDB) SaveStats(stats ClickStats) error {
 	mungedStats := make(map[string]int)
 	for id, clicks := range stats {
 		mungedStats[linkID(id)] = clicks
@@ -128,6 +136,18 @@ func (c *ConvexDB2) SaveStats(stats ClickStats) error {
 	if httpRes.StatusCode != 200 {
 		return err
 	}
+
+	return nil
+}
+
+func clear(c *ConvexDB) error {
+	request := *convexclient.NewRequestClearDefault(*convexclient.NewRequestClearDefaultArgs(c.token))
+	resp, httpRes, err := c.client.MutationAPI.ApiRunClearDefaultPost(context.Background()).RequestClearDefault(request).Execute()
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	if validationErr != nil {
+		return validationErr
+	}
+
 	return nil
 }
 

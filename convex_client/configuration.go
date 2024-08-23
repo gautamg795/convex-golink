@@ -93,8 +93,14 @@ func NewConfiguration() *Configuration {
 		Debug:            false,
 		Servers:          ServerConfigurations{
 			{
-				URL: "https://tacit-grouse-50.convex.cloud",
-				Description: "No description provided",
+				URL: "{hostUrl}",
+				Description: "Convex App API",
+				Variables: map[string]ServerVariable{
+					"hostUrl": ServerVariable{
+						Description: "The host URL of the Convex App API",
+						DefaultValue: "https://tacit-grouse-50.convex.cloud",
+					},
+				},
 			},
 		},
 		OperationServers: map[string]ServerConfigurations{
