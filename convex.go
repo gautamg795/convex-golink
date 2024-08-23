@@ -6,30 +6,31 @@ import (
 	"io/fs"
 	"time"
 
-	convexclient "github.com/jordanhunt22/golink_convex_client"
+	convex "github.com/jordanhunt22/golink_convex_client"
 )
 
 type ConvexDB struct {
 	token  string
-	client *convexclient.APIClient
+	client *convex.APIClient
 }
 
 func NewConvexDB(host *string, token string) *ConvexDB {
-	config := convexclient.NewConfiguration()
+	config := convex.NewConfiguration()
 	if host != nil {
-		config.Servers = convexclient.ServerConfigurations{
+		config.Servers = convex.ServerConfigurations{
 			{
 				URL:         *host,
 				Description: "Convex URL that serves requests",
 			},
 		}
 	}
-	client := convexclient.NewAPIClient(config)
+	client := convex.NewAPIClient(config)
+
 	return &ConvexDB{token: token, client: client}
 }
 
 func (c *ConvexDB) LoadAll() ([]*Link, error) {
-	request := *convexclient.NewRequestLoadLoadAll(*convexclient.NewRequestClearDefaultArgs(c.token))
+	request := *convex.NewRequestLoadLoadAll(*convex.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadAllPost(context.Background()).RequestLoadLoadAll(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
 	if validationErr != nil {
@@ -52,7 +53,7 @@ func (c *ConvexDB) LoadAll() ([]*Link, error) {
 }
 
 func (c *ConvexDB) Load(short string) (*Link, error) {
-	request := *convexclient.NewRequestLoadLoadOne(*convexclient.NewRequestLoadLoadOneArgs(short, c.token))
+	request := *convex.NewRequestLoadLoadOne(*convex.NewRequestLoadLoadOneArgs(short, c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadOnePost(context.Background()).RequestLoadLoadOne(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
 	if validationErr != nil {
@@ -71,11 +72,12 @@ func (c *ConvexDB) Load(short string) (*Link, error) {
 		LastEdit: time.Unix(int64(linkDoc.LastEdit), 0),
 		Owner:    linkDoc.Owner,
 	}
+
 	return &link, nil
 }
 
 func (c *ConvexDB) Save(link *Link) error {
-	linkDoc := convexclient.RequestStoreDefaultArgsLink{
+	linkDoc := convex.RequestStoreDefaultArgsLink{
 		Short:        link.Short,
 		Long:         link.Long,
 		Owner:        link.Owner,
@@ -83,7 +85,7 @@ func (c *ConvexDB) Save(link *Link) error {
 		Created:      float32(link.Created.Unix()),
 		LastEdit:     float32(link.LastEdit.Unix()),
 	}
-	request := *convexclient.NewRequestStoreDefault(*convexclient.NewRequestStoreDefaultArgs(linkDoc, c.token))
+	request := *convex.NewRequestStoreDefault(*convex.NewRequestStoreDefaultArgs(linkDoc, c.token))
 	resp, httpRes, err := c.client.MutationAPI.ApiRunStoreDefaultPost(context.Background()).RequestStoreDefault(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
 	if validationErr != nil {
@@ -94,7 +96,7 @@ func (c *ConvexDB) Save(link *Link) error {
 }
 
 func (c *ConvexDB) LoadStats() (ClickStats, error) {
-	request := *convexclient.NewRequestStatsLoadStats(*convexclient.NewRequestClearDefaultArgs(c.token))
+	request := *convex.NewRequestStatsLoadStats(*convex.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunStatsLoadStatsPost(context.Background()).RequestStatsLoadStats(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
 	if validationErr != nil {
@@ -114,34 +116,28 @@ func (c *ConvexDB) LoadStats() (ClickStats, error) {
 		}
 		clicks[k] = int(num)
 	}
+	
 	return clicks, nil
 }
 
 func (c *ConvexDB) SaveStats(stats ClickStats) error {
-	mungedStats := make(map[string]int)
+	mungedStats := make(map[string]interface{})
 	for id, clicks := range stats {
 		mungedStats[linkID(id)] = clicks
 	}
 
-	request := *convexclient.NewRequestStatsSaveStats(*convexclient.NewRequestStatsSaveStatsArgs(map[string]interface{}{"stats": mungedStats}, c.token))
+	request := *convex.NewRequestStatsSaveStats(*convex.NewRequestStatsSaveStatsArgs(mungedStats, c.token))
 	resp, httpRes, err := c.client.MutationAPI.ApiRunStatsSaveStatsPost(context.Background()).RequestStatsSaveStats(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
 	if validationErr != nil {
 		return validationErr
 	}
 
-	if err != nil {
-		return err
-	}
-	if httpRes.StatusCode != 200 {
-		return err
-	}
-
 	return nil
 }
 
 func clear(c *ConvexDB) error {
-	request := *convexclient.NewRequestClearDefault(*convexclient.NewRequestClearDefaultArgs(c.token))
+	request := *convex.NewRequestClearDefault(*convex.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.MutationAPI.ApiRunClearDefaultPost(context.Background()).RequestClearDefault(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
 	if validationErr != nil {
