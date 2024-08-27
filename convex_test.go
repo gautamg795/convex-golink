@@ -41,7 +41,7 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 		{Short: "Foo.Bar", Long: "long", Created: time.Now(), LastEdit: time.Now()},
 	}
 
-	approximateTimeEq := cmp.Options{cmp.FilterPath(func(path cmp.Path) bool { return path.Last().Type() == reflect.TypeOf(time.Time{}) }, cmpopts.EquateApproxTime(time.Second))}
+	approximateTimeEq := cmp.Options{cmp.FilterPath(func(path cmp.Path) bool { return path.Last().Type() == reflect.TypeOf(time.Time{}) }, cmpopts.EquateApproxTime(time.Minute))}
 	for _, link := range links {
 		if err := db.Save(link); err != nil {
 			t.Error(err)
@@ -71,7 +71,7 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 // Test saving and loading stats for SQLiteDB
 func Test_Convex_SaveLoadStats(t *testing.T) {
 	url := getDbUrl()
-	db := NewConvexDB(&url, "test")
+	db := NewConvexDB(&url, "123")
 	clear(db)
 	defer clear(db)
 

@@ -53,7 +53,7 @@ func (c *ConvexDB) LoadAll() ([]*Link, error) {
 }
 
 func (c *ConvexDB) Load(short string) (*Link, error) {
-	request := *convex.NewRequestLoadLoadOne(*convex.NewRequestLoadLoadOneArgs(short, c.token))
+	request := *convex.NewRequestLoadLoadOne(*convex.NewRequestLoadLoadOneArgs(linkID(short), c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadOnePost(context.Background()).RequestLoadLoadOne(request).Execute()
 	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
 	if validationErr != nil {
@@ -116,7 +116,7 @@ func (c *ConvexDB) LoadStats() (ClickStats, error) {
 		}
 		clicks[k] = int(num)
 	}
-	
+
 	return clicks, nil
 }
 
