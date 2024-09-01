@@ -37,3 +37,15 @@ type Database interface {
 	LoadStats() (ClickStats, error)
 	SaveStats(stats ClickStats) error
 }
+
+// DeleteStats deletes click stats for a link.
+func (s *SQLiteDB) DeleteStats(short string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	_, err := s.db.Exec("DELETE FROM Stats WHERE ID = ?", linkID(short))
+	if err != nil {
+		return err
+	}
+	return nil
+}
