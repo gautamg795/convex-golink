@@ -16,36 +16,36 @@ import (
 	"fmt"
 )
 
-// checks if the RequestLoadLoadOne type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &RequestLoadLoadOne{}
+// checks if the RequestClearDeleteOne type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &RequestClearDeleteOne{}
 
-// RequestLoadLoadOne struct for RequestLoadLoadOne
-type RequestLoadLoadOne struct {
+// RequestClearDeleteOne struct for RequestClearDeleteOne
+type RequestClearDeleteOne struct {
 	Args RequestClearDeleteOneArgs `json:"args"`
 }
 
-type _RequestLoadLoadOne RequestLoadLoadOne
+type _RequestClearDeleteOne RequestClearDeleteOne
 
-// NewRequestLoadLoadOne instantiates a new RequestLoadLoadOne object
+// NewRequestClearDeleteOne instantiates a new RequestClearDeleteOne object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRequestLoadLoadOne(args RequestClearDeleteOneArgs) *RequestLoadLoadOne {
-	this := RequestLoadLoadOne{}
+func NewRequestClearDeleteOne(args RequestClearDeleteOneArgs) *RequestClearDeleteOne {
+	this := RequestClearDeleteOne{}
 	this.Args = args
 	return &this
 }
 
-// NewRequestLoadLoadOneWithDefaults instantiates a new RequestLoadLoadOne object
+// NewRequestClearDeleteOneWithDefaults instantiates a new RequestClearDeleteOne object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRequestLoadLoadOneWithDefaults() *RequestLoadLoadOne {
-	this := RequestLoadLoadOne{}
+func NewRequestClearDeleteOneWithDefaults() *RequestClearDeleteOne {
+	this := RequestClearDeleteOne{}
 	return &this
 }
 
 // GetArgs returns the Args field value
-func (o *RequestLoadLoadOne) GetArgs() RequestClearDeleteOneArgs {
+func (o *RequestClearDeleteOne) GetArgs() RequestClearDeleteOneArgs {
 	if o == nil {
 		var ret RequestClearDeleteOneArgs
 		return ret
@@ -56,7 +56,7 @@ func (o *RequestLoadLoadOne) GetArgs() RequestClearDeleteOneArgs {
 
 // GetArgsOk returns a tuple with the Args field value
 // and a boolean to check if the value has been set.
-func (o *RequestLoadLoadOne) GetArgsOk() (*RequestClearDeleteOneArgs, bool) {
+func (o *RequestClearDeleteOne) GetArgsOk() (*RequestClearDeleteOneArgs, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -64,11 +64,11 @@ func (o *RequestLoadLoadOne) GetArgsOk() (*RequestClearDeleteOneArgs, bool) {
 }
 
 // SetArgs sets field value
-func (o *RequestLoadLoadOne) SetArgs(v RequestClearDeleteOneArgs) {
+func (o *RequestClearDeleteOne) SetArgs(v RequestClearDeleteOneArgs) {
 	o.Args = v
 }
 
-func (o RequestLoadLoadOne) MarshalJSON() ([]byte, error) {
+func (o RequestClearDeleteOne) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -76,13 +76,13 @@ func (o RequestLoadLoadOne) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o RequestLoadLoadOne) ToMap() (map[string]interface{}, error) {
+func (o RequestClearDeleteOne) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["args"] = o.Args
 	return toSerialize, nil
 }
 
-func (o *RequestLoadLoadOne) UnmarshalJSON(data []byte) (err error) {
+func (o *RequestClearDeleteOne) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -104,53 +104,53 @@ func (o *RequestLoadLoadOne) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varRequestLoadLoadOne := _RequestLoadLoadOne{}
+	varRequestClearDeleteOne := _RequestClearDeleteOne{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRequestLoadLoadOne)
+	err = decoder.Decode(&varRequestClearDeleteOne)
 
 	if err != nil {
 		return err
 	}
 
-	*o = RequestLoadLoadOne(varRequestLoadLoadOne)
+	*o = RequestClearDeleteOne(varRequestClearDeleteOne)
 
 	return err
 }
 
-type NullableRequestLoadLoadOne struct {
-	value *RequestLoadLoadOne
+type NullableRequestClearDeleteOne struct {
+	value *RequestClearDeleteOne
 	isSet bool
 }
 
-func (v NullableRequestLoadLoadOne) Get() *RequestLoadLoadOne {
+func (v NullableRequestClearDeleteOne) Get() *RequestClearDeleteOne {
 	return v.value
 }
 
-func (v *NullableRequestLoadLoadOne) Set(val *RequestLoadLoadOne) {
+func (v *NullableRequestClearDeleteOne) Set(val *RequestClearDeleteOne) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRequestLoadLoadOne) IsSet() bool {
+func (v NullableRequestClearDeleteOne) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRequestLoadLoadOne) Unset() {
+func (v *NullableRequestClearDeleteOne) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRequestLoadLoadOne(val *RequestLoadLoadOne) *NullableRequestLoadLoadOne {
-	return &NullableRequestLoadLoadOne{value: val, isSet: true}
+func NewNullableRequestClearDeleteOne(val *RequestClearDeleteOne) *NullableRequestClearDeleteOne {
+	return &NullableRequestClearDeleteOne{value: val, isSet: true}
 }
 
-func (v NullableRequestLoadLoadOne) MarshalJSON() ([]byte, error) {
+func (v NullableRequestClearDeleteOne) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRequestLoadLoadOne) UnmarshalJSON(src []byte) error {
+func (v *NullableRequestClearDeleteOne) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

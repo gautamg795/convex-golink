@@ -32,7 +32,7 @@ func NewConvexDB(host *string, token string) *ConvexDB {
 func (c *ConvexDB) LoadAll() ([]*Link, error) {
 	request := *convex.NewRequestLoadLoadAll(*convex.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadAllPost(context.Background()).RequestLoadLoadAll(request).Execute()
-	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.ErrorMessage)
 	if validationErr != nil {
 		return nil, validationErr
 	}
@@ -53,9 +53,9 @@ func (c *ConvexDB) LoadAll() ([]*Link, error) {
 }
 
 func (c *ConvexDB) Load(short string) (*Link, error) {
-	request := *convex.NewRequestLoadLoadOne(*convex.NewRequestLoadLoadOneArgs(linkID(short), c.token))
+	request := *convex.NewRequestLoadLoadOne(*convex.NewRequestClearDeleteOneArgs(linkID(short), c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunLoadLoadOnePost(context.Background()).RequestLoadLoadOne(request).Execute()
-	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.ErrorMessage)
 	if validationErr != nil {
 		return nil, validationErr
 	}
@@ -87,9 +87,9 @@ func (c *ConvexDB) Save(link *Link) error {
 	}
 	request := *convex.NewRequestStoreDefault(*convex.NewRequestStoreDefaultArgs(linkDoc, c.token))
 	resp, httpRes, err := c.client.MutationAPI.ApiRunStoreDefaultPost(context.Background()).RequestStoreDefault(request).Execute()
-	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.ErrorMessage)
 	if validationErr != nil {
-		return validationErr
+		return fmt.Errorf(*resp.ErrorMessage)
 	}
 
 	return nil
@@ -98,7 +98,7 @@ func (c *ConvexDB) Save(link *Link) error {
 func (c *ConvexDB) LoadStats() (ClickStats, error) {
 	request := *convex.NewRequestStatsLoadStats(*convex.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.QueryAPI.ApiRunStatsLoadStatsPost(context.Background()).RequestStatsLoadStats(request).Execute()
-	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.ErrorMessage)
 	if validationErr != nil {
 		return nil, validationErr
 	}
@@ -128,7 +128,18 @@ func (c *ConvexDB) SaveStats(stats ClickStats) error {
 
 	request := *convex.NewRequestStatsSaveStats(*convex.NewRequestStatsSaveStatsArgs(mungedStats, c.token))
 	resp, httpRes, err := c.client.MutationAPI.ApiRunStatsSaveStatsPost(context.Background()).RequestStatsSaveStats(request).Execute()
-	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.ErrorMessage)
+	if validationErr != nil {
+		return validationErr
+	}
+
+	return nil
+}
+
+func (c *ConvexDB) Delete(short string) error {
+	request := *convex.NewRequestClearDeleteOne(*convex.NewRequestClearDeleteOneArgs(linkID(short), c.token))
+	resp, httpRes, err := c.client.MutationAPI.ApiRunClearDeleteOnePost(context.Background()).RequestClearDeleteOne(request).Execute()
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.ErrorMessage)
 	if validationErr != nil {
 		return validationErr
 	}
@@ -139,7 +150,7 @@ func (c *ConvexDB) SaveStats(stats ClickStats) error {
 func clear(c *ConvexDB) error {
 	request := *convex.NewRequestClearDefault(*convex.NewRequestClearDefaultArgs(c.token))
 	resp, httpRes, err := c.client.MutationAPI.ApiRunClearDefaultPost(context.Background()).RequestClearDefault(request).Execute()
-	validationErr := validateResponse(httpRes.StatusCode, err, resp.Status)
+	validationErr := validateResponse(httpRes.StatusCode, err, resp.ErrorMessage)
 	if validationErr != nil {
 		return validationErr
 	}
@@ -147,15 +158,15 @@ func clear(c *ConvexDB) error {
 	return nil
 }
 
-func validateResponse(statusCode int, err error, convexStatus string) error {
+func validateResponse(statusCode int, err error, convexErrorMessage *string) error {
 	if err != nil {
 		return err
 	}
 	if statusCode != 200 {
 		return err
 	}
-	if convexStatus == "error" {
-		return fmt.Errorf("error from convex")
+	if convexErrorMessage != nil {
+		return fmt.Errorf(*convexErrorMessage)
 	}
 
 	return nil

@@ -79,6 +79,7 @@ All URIs are relative to *https://tacit-grouse-50.convex.cloud*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *MutationAPI* | [**ApiRunClearDefaultPost**](docs/MutationAPI.md#apiruncleardefaultpost) | **Post** /api/run/clear/default | Calls a mutation at the path clear.js:default
+*MutationAPI* | [**ApiRunClearDeleteOnePost**](docs/MutationAPI.md#apiruncleardeleteonepost) | **Post** /api/run/clear/deleteOne | Calls a mutation at the path clear.js:deleteOne
 *MutationAPI* | [**ApiRunStatsSaveStatsPost**](docs/MutationAPI.md#apirunstatssavestatspost) | **Post** /api/run/stats/saveStats | Calls a mutation at the path stats.js:saveStats
 *MutationAPI* | [**ApiRunStoreDefaultPost**](docs/MutationAPI.md#apirunstoredefaultpost) | **Post** /api/run/store/default | Calls a mutation at the path store.js:default
 *QueryAPI* | [**ApiRunLoadLoadAllPost**](docs/QueryAPI.md#apirunloadloadallpost) | **Post** /api/run/load/loadAll | Calls a query at the path load.js:loadAll
@@ -90,9 +91,10 @@ Class | Method | HTTP request | Description
 
  - [RequestClearDefault](docs/RequestClearDefault.md)
  - [RequestClearDefaultArgs](docs/RequestClearDefaultArgs.md)
+ - [RequestClearDeleteOne](docs/RequestClearDeleteOne.md)
+ - [RequestClearDeleteOneArgs](docs/RequestClearDeleteOneArgs.md)
  - [RequestLoadLoadAll](docs/RequestLoadLoadAll.md)
  - [RequestLoadLoadOne](docs/RequestLoadLoadOne.md)
- - [RequestLoadLoadOneArgs](docs/RequestLoadLoadOneArgs.md)
  - [RequestStatsLoadStats](docs/RequestStatsLoadStats.md)
  - [RequestStatsSaveStats](docs/RequestStatsSaveStats.md)
  - [RequestStatsSaveStatsArgs](docs/RequestStatsSaveStatsArgs.md)
@@ -100,6 +102,7 @@ Class | Method | HTTP request | Description
  - [RequestStoreDefaultArgs](docs/RequestStoreDefaultArgs.md)
  - [RequestStoreDefaultArgsLink](docs/RequestStoreDefaultArgsLink.md)
  - [ResponseClearDefault](docs/ResponseClearDefault.md)
+ - [ResponseClearDeleteOne](docs/ResponseClearDeleteOne.md)
  - [ResponseLoadLoadAll](docs/ResponseLoadLoadAll.md)
  - [ResponseLoadLoadAllValueInner](docs/ResponseLoadLoadAllValueInner.md)
  - [ResponseLoadLoadOne](docs/ResponseLoadLoadOne.md)

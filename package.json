@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.13.5",
-    "convex": "^1.14.3"
+    "convex": "^1.14.3",
+    "convex-helpers": "^0.1.55"
   }
 }

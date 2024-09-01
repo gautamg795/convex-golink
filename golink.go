@@ -105,7 +105,7 @@ func Run() error {
 		if *convexToken == "" {
 			log.Fatal("A authorization token must be provided when using Convex.")
 		}
-		db = NewConvexDB(*convexHost, *convexToken)
+		db = NewConvexDB(convexHost, *convexToken)
 	}
 
 	if db == nil {

@@ -16,38 +16,38 @@ import (
 	"fmt"
 )
 
-// checks if the RequestLoadLoadOne type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &RequestLoadLoadOne{}
+// checks if the RequestTestTMutation type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &RequestTestTMutation{}
 
-// RequestLoadLoadOne struct for RequestLoadLoadOne
-type RequestLoadLoadOne struct {
-	Args RequestClearDeleteOneArgs `json:"args"`
+// RequestTestTMutation struct for RequestTestTMutation
+type RequestTestTMutation struct {
+	Args RequestTestTMutationArgs `json:"args"`
 }
 
-type _RequestLoadLoadOne RequestLoadLoadOne
+type _RequestTestTMutation RequestTestTMutation
 
-// NewRequestLoadLoadOne instantiates a new RequestLoadLoadOne object
+// NewRequestTestTMutation instantiates a new RequestTestTMutation object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRequestLoadLoadOne(args RequestClearDeleteOneArgs) *RequestLoadLoadOne {
-	this := RequestLoadLoadOne{}
+func NewRequestTestTMutation(args RequestTestTMutationArgs) *RequestTestTMutation {
+	this := RequestTestTMutation{}
 	this.Args = args
 	return &this
 }
 
-// NewRequestLoadLoadOneWithDefaults instantiates a new RequestLoadLoadOne object
+// NewRequestTestTMutationWithDefaults instantiates a new RequestTestTMutation object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRequestLoadLoadOneWithDefaults() *RequestLoadLoadOne {
-	this := RequestLoadLoadOne{}
+func NewRequestTestTMutationWithDefaults() *RequestTestTMutation {
+	this := RequestTestTMutation{}
 	return &this
 }
 
 // GetArgs returns the Args field value
-func (o *RequestLoadLoadOne) GetArgs() RequestClearDeleteOneArgs {
+func (o *RequestTestTMutation) GetArgs() RequestTestTMutationArgs {
 	if o == nil {
-		var ret RequestClearDeleteOneArgs
+		var ret RequestTestTMutationArgs
 		return ret
 	}
 
@@ -56,7 +56,7 @@ func (o *RequestLoadLoadOne) GetArgs() RequestClearDeleteOneArgs {
 
 // GetArgsOk returns a tuple with the Args field value
 // and a boolean to check if the value has been set.
-func (o *RequestLoadLoadOne) GetArgsOk() (*RequestClearDeleteOneArgs, bool) {
+func (o *RequestTestTMutation) GetArgsOk() (*RequestTestTMutationArgs, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -64,11 +64,11 @@ func (o *RequestLoadLoadOne) GetArgsOk() (*RequestClearDeleteOneArgs, bool) {
 }
 
 // SetArgs sets field value
-func (o *RequestLoadLoadOne) SetArgs(v RequestClearDeleteOneArgs) {
+func (o *RequestTestTMutation) SetArgs(v RequestTestTMutationArgs) {
 	o.Args = v
 }
 
-func (o RequestLoadLoadOne) MarshalJSON() ([]byte, error) {
+func (o RequestTestTMutation) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -76,13 +76,13 @@ func (o RequestLoadLoadOne) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o RequestLoadLoadOne) ToMap() (map[string]interface{}, error) {
+func (o RequestTestTMutation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["args"] = o.Args
 	return toSerialize, nil
 }
 
-func (o *RequestLoadLoadOne) UnmarshalJSON(data []byte) (err error) {
+func (o *RequestTestTMutation) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -104,53 +104,53 @@ func (o *RequestLoadLoadOne) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varRequestLoadLoadOne := _RequestLoadLoadOne{}
+	varRequestTestTMutation := _RequestTestTMutation{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRequestLoadLoadOne)
+	err = decoder.Decode(&varRequestTestTMutation)
 
 	if err != nil {
 		return err
 	}
 
-	*o = RequestLoadLoadOne(varRequestLoadLoadOne)
+	*o = RequestTestTMutation(varRequestTestTMutation)
 
 	return err
 }
 
-type NullableRequestLoadLoadOne struct {
-	value *RequestLoadLoadOne
+type NullableRequestTestTMutation struct {
+	value *RequestTestTMutation
 	isSet bool
 }
 
-func (v NullableRequestLoadLoadOne) Get() *RequestLoadLoadOne {
+func (v NullableRequestTestTMutation) Get() *RequestTestTMutation {
 	return v.value
 }
 
-func (v *NullableRequestLoadLoadOne) Set(val *RequestLoadLoadOne) {
+func (v *NullableRequestTestTMutation) Set(val *RequestTestTMutation) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRequestLoadLoadOne) IsSet() bool {
+func (v NullableRequestTestTMutation) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRequestLoadLoadOne) Unset() {
+func (v *NullableRequestTestTMutation) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRequestLoadLoadOne(val *RequestLoadLoadOne) *NullableRequestLoadLoadOne {
-	return &NullableRequestLoadLoadOne{value: val, isSet: true}
+func NewNullableRequestTestTMutation(val *RequestTestTMutation) *NullableRequestTestTMutation {
+	return &NullableRequestTestTMutation{value: val, isSet: true}
 }
 
-func (v NullableRequestLoadLoadOne) MarshalJSON() ([]byte, error) {
+func (v NullableRequestTestTMutation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRequestLoadLoadOne) UnmarshalJSON(src []byte) error {
+func (v *NullableRequestTestTMutation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

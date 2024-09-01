@@ -10,9 +10,10 @@ docs/MutationAPI.md
 docs/QueryAPI.md
 docs/RequestClearDefault.md
 docs/RequestClearDefaultArgs.md
+docs/RequestClearDeleteOne.md
+docs/RequestClearDeleteOneArgs.md
 docs/RequestLoadLoadAll.md
 docs/RequestLoadLoadOne.md
-docs/RequestLoadLoadOneArgs.md
 docs/RequestStatsLoadStats.md
 docs/RequestStatsSaveStats.md
 docs/RequestStatsSaveStatsArgs.md
@@ -20,6 +21,7 @@ docs/RequestStoreDefault.md
 docs/RequestStoreDefaultArgs.md
 docs/RequestStoreDefaultArgsLink.md
 docs/ResponseClearDefault.md
+docs/ResponseClearDeleteOne.md
 docs/ResponseLoadLoadAll.md
 docs/ResponseLoadLoadAllValueInner.md
 docs/ResponseLoadLoadOne.md
@@ -32,9 +34,10 @@ go.mod
 go.sum
 model_request_clear_default.go
 model_request_clear_default_args.go
+model_request_clear_delete_one.go
+model_request_clear_delete_one_args.go
 model_request_load_load_all.go
 model_request_load_load_one.go
-model_request_load_load_one_args.go
 model_request_stats_load_stats.go
 model_request_stats_save_stats.go
 model_request_stats_save_stats_args.go
@@ -42,6 +45,7 @@ model_request_store_default.go
 model_request_store_default_args.go
 model_request_store_default_args_link.go
 model_response_clear_default.go
+model_response_clear_delete_one.go
 model_response_load_load_all.go
 model_response_load_load_all_value_inner.go
 model_response_load_load_one.go

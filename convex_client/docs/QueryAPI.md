@@ -93,7 +93,7 @@ import (
 )
 
 func main() {
-	requestLoadLoadOne := *openapiclient.NewRequestLoadLoadOne(*openapiclient.NewRequestLoadLoadOneArgs("NormalizedId_example", "Token_example")) // RequestLoadLoadOne | 
+	requestLoadLoadOne := *openapiclient.NewRequestLoadLoadOne(*openapiclient.NewRequestClearDeleteOneArgs("NormalizedId_example", "Token_example")) // RequestLoadLoadOne | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)

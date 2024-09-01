@@ -5,6 +5,7 @@ All URIs are relative to *https://tacit-grouse-50.convex.cloud*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**ApiRunClearDefaultPost**](MutationAPI.md#ApiRunClearDefaultPost) | **Post** /api/run/clear/default | Calls a mutation at the path clear.js:default
+[**ApiRunClearDeleteOnePost**](MutationAPI.md#ApiRunClearDeleteOnePost) | **Post** /api/run/clear/deleteOne | Calls a mutation at the path clear.js:deleteOne
 [**ApiRunStatsSaveStatsPost**](MutationAPI.md#ApiRunStatsSaveStatsPost) | **Post** /api/run/stats/saveStats | Calls a mutation at the path stats.js:saveStats
 [**ApiRunStoreDefaultPost**](MutationAPI.md#ApiRunStoreDefaultPost) | **Post** /api/run/store/default | Calls a mutation at the path store.js:default
 
@@ -59,6 +60,70 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ResponseClearDefault**](ResponseClearDefault.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## ApiRunClearDeleteOnePost
+
+> ResponseClearDeleteOne ApiRunClearDeleteOnePost(ctx).RequestClearDeleteOne(requestClearDeleteOne).Execute()
+
+Calls a mutation at the path clear.js:deleteOne
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+)
+
+func main() {
+	requestClearDeleteOne := *openapiclient.NewRequestClearDeleteOne(*openapiclient.NewRequestClearDeleteOneArgs("NormalizedId_example", "Token_example")) // RequestClearDeleteOne | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.MutationAPI.ApiRunClearDeleteOnePost(context.Background()).RequestClearDeleteOne(requestClearDeleteOne).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `MutationAPI.ApiRunClearDeleteOnePost``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `ApiRunClearDeleteOnePost`: ResponseClearDeleteOne
+	fmt.Fprintf(os.Stdout, "Response from `MutationAPI.ApiRunClearDeleteOnePost`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiApiRunClearDeleteOnePostRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **requestClearDeleteOne** | [**RequestClearDeleteOne**](RequestClearDeleteOne.md) |  | 
+
+### Return type
+
+[**ResponseClearDeleteOne**](ResponseClearDeleteOne.md)
 
 ### Authorization
 

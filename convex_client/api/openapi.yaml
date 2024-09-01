@@ -49,6 +49,36 @@ paths:
       summary: Calls a mutation at the path clear.js:default
       tags:
       - mutation
+  /api/run/clear/deleteOne:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_clear.deleteOne'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_clear.deleteOne'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a mutation at the path clear.js:deleteOne
+      tags:
+      - mutation
   /api/run/load/loadOne:
     post:
       requestBody:
@@ -230,10 +260,39 @@ components:
       required:
       - status
       type: object
+    Request_clear.deleteOne:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_clear_deleteOne_args'
+      required:
+      - args
+      type: object
+    Response_clear.deleteOne:
+      example:
+        errorMessage: errorMessage
+        value: value
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value:
+          nullable: true
+          type: string
+      required:
+      - status
+      type: object
     Request_load.loadOne:
       properties:
         args:
-          $ref: '#/components/schemas/Request_load_loadOne_args'
+          $ref: '#/components/schemas/Request_clear_deleteOne_args'
       required:
       - args
       type: object
@@ -407,7 +466,7 @@ components:
       required:
       - token
       type: object
-    Request_load_loadOne_args:
+    Request_clear_deleteOne_args:
       properties:
         normalizedId:
           type: string

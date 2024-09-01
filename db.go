@@ -1,6 +1,5 @@
 // Copyright 2022 Tailscale Inc & Contributors
 // SPDX-License-Identifier: BSD-3-Clause
-
 package golink
 
 import (
@@ -36,6 +35,7 @@ type Database interface {
 	Save(link *Link) error
 	LoadStats() (ClickStats, error)
 	SaveStats(stats ClickStats) error
+	Delete(short string) error
 }
 
 // DeleteStats deletes click stats for a link.

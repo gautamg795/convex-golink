@@ -19,3 +19,25 @@ export default mutation({
   },
 });
 
+export const deleteOne = mutation({
+  args: { normalizedId: v.string(), token: v.string() },
+  returns: v.null(),
+  handler: async (ctx, { normalizedId, token }) => {
+    if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
+      throw new Error("Invalid authorization token");
+    }
+    const link = await ctx.db
+      .query("links")
+      .withIndex("by_normalizedId", (q) => q.eq("normalizedId", normalizedId))
+      .first();
+
+    if (link !== null) {
+      let stats = await ctx.db.query("stats").withIndex("byLink", (q) => q.eq("link", link._id)).collect();
+      for (const stat of stats) {
+        await ctx.db.delete(stat._id);
+      }
+      await ctx.db.delete(link._id);
+    }
+  },
+});
+
