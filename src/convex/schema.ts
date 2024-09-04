@@ -10,8 +10,10 @@ export const LinkDoc = {
   owner: v.string(),
 };
 
+export const LinkTable = defineTable(LinkDoc).index("by_normalizedId", ["normalizedId"]);
+
 export default defineSchema({
-  links: defineTable(LinkDoc).index("by_normalizedId", ["normalizedId"]),
+  links: LinkTable,
   stats: defineTable({
     link: v.id("links"),
     clicks: v.number(),

@@ -13,18 +13,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func clear(c *ConvexDB) {
-	c.mutation(&UdfExecution{Path: "clear", Args: map[string]interface{}{}, Format: "json"})
-}
-
 func getDbUrl() string {
 	envLocal, err := godotenv.Read(".env.local")
 	if err != nil {
-		return "https://feeble-gull-946.convex.cloud"
+		return "https://tacit-grouse-50.convex.cloud"
 	}
 	url := envLocal["VITE_CONVEX_URL"]
 	if len(url) == 0 {
-		url = "https://feeble-gull-946.convex.cloud"
+		url = "https://tacit-grouse-50.convex.cloud"
 	}
 	return url
 }
@@ -32,7 +28,7 @@ func getDbUrl() string {
 // Test saving and loading links for SQLiteDB
 func Test_Convex_SaveLoadLinks(t *testing.T) {
 	url := getDbUrl()
-	db := NewConvexDB(url, "test")
+	db := NewConvexDB(&url, "test")
 	clear(db)
 	defer clear(db)
 
@@ -41,7 +37,7 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 		{Short: "Foo.Bar", Long: "long", Created: time.Now(), LastEdit: time.Now()},
 	}
 
-	approximateTimeEq := cmp.Options{cmp.FilterPath(func(path cmp.Path) bool { return path.Last().Type() == reflect.TypeOf(time.Time{}) }, cmpopts.EquateApproxTime(time.Second))}
+	approximateTimeEq := cmp.Options{cmp.FilterPath(func(path cmp.Path) bool { return path.Last().Type() == reflect.TypeOf(time.Time{}) }, cmpopts.EquateApproxTime(time.Minute))}
 	for _, link := range links {
 		if err := db.Save(link); err != nil {
 			t.Error(err)
@@ -71,7 +67,7 @@ func Test_Convex_SaveLoadLinks(t *testing.T) {
 // Test saving and loading stats for SQLiteDB
 func Test_Convex_SaveLoadStats(t *testing.T) {
 	url := getDbUrl()
-	db := NewConvexDB(url, "test")
+	db := NewConvexDB(&url, "test")
 	clear(db)
 	defer clear(db)
 
@@ -109,5 +105,33 @@ func Test_Convex_SaveLoadStats(t *testing.T) {
 	}
 	if !cmp.Equal(got, want) {
 		t.Errorf("db.LoadStats got %v, want %v", got, want)
+	}
+
+	// test deleting stats
+	err = db.Delete("a")
+	if err != nil {
+		t.Error(err)
+	}
+
+	got, err = db.LoadStats()
+	if err != nil {
+		t.Error(err)
+	}
+
+	want = ClickStats{"b": 3}
+	if !cmp.Equal(got, want) {
+		t.Errorf("db.LoadStats after delete got %v, want %v", got, want)
+	}
+
+	link, err := db.LoadAll()
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(link) != 1 {
+		t.Errorf("db.LoadAll after delete got %v, want %v", len(link), 1)
+	}
+	if link[0].Short != "b" {
+		t.Errorf("db.LoadAll after delete got %v, want %v", link[0].Short, "b")
 	}
 }

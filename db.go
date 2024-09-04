@@ -1,6 +1,5 @@
 // Copyright 2022 Tailscale Inc & Contributors
 // SPDX-License-Identifier: BSD-3-Clause
-
 package golink
 
 import (
@@ -36,4 +35,17 @@ type Database interface {
 	Save(link *Link) error
 	LoadStats() (ClickStats, error)
 	SaveStats(stats ClickStats) error
+	Delete(short string) error
+}
+
+// DeleteStats deletes click stats for a link.
+func (s *SQLiteDB) DeleteStats(short string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	_, err := s.db.Exec("DELETE FROM Stats WHERE ID = ?", linkID(short))
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 export const loadStats = query({
   args: { token: v.string() },
+  returns: v.any(),
   handler: async (ctx, { token }) => {
     if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
       throw new Error("Invalid authorization token");
@@ -25,11 +26,13 @@ export const loadStats = query({
 
 export const saveStats = mutation({
   args: { stats: v.record(v.string(), v.number()), token: v.string() },
+  returns: v.null(),
   handler: async (ctx, { stats, token }) => {
     if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
       throw new Error("Invalid authorization token");
     }
-    for (const [normalizedId, clicks] of Object.entries(stats)) {
+    const typedStats: Record<string, number> = stats;
+    for (const [normalizedId, clicks] of Object.entries(typedStats)) {
       const link = await ctx.db
         .query("links")
         .withIndex("by_normalizedId", (q) => q.eq("normalizedId", normalizedId))

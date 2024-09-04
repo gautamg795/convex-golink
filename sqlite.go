@@ -161,3 +161,26 @@ func (s *SQLiteDB) SaveStats(stats ClickStats) error {
 	}
 	return tx.Commit()
 }
+
+// The caller owns the returned value.
+func (s *SQLiteDB) Delete(short string) error {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	tx, err := s.db.BeginTx(context.TODO(), nil)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec("DELETE FROM Links WHERE ID = ?1 LIMIT 1", linkID(short))
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = tx.Exec("DELETE FROM Stats WHERE ID = ?1 LIMIT 1", linkID(short))
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}

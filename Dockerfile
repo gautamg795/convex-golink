@@ -1,5 +1,10 @@
-FROM --platform=$BUILDPLATFORM cgr.dev/chainguard/wolfi-base as build
-RUN apk update && apk add build-base git openssh go-1.20
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine as build
+
+WORKDIR /work
+
+COPY convex_client/ convex_client/
+WORKDIR /work/convex_client
+RUN go mod download
 
 WORKDIR /work
 
@@ -9,13 +14,12 @@ RUN go mod download
 COPY . .
 ARG TARGETOS TARGETARCH TARGETVARIANT
 RUN \
-    if [ "${TARGETARCH}" = "arm" ] && [ -n "${TARGETVARIANT}" ]; then \
-      export GOARM="${TARGETVARIANT#v}"; \
-    fi; \
-    GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -v ./cmd/golink
+  if [ "${TARGETARCH}" = "arm" ] && [ -n "${TARGETVARIANT}" ]; then \
+  export GOARM="${TARGETVARIANT#v}"; \
+  fi; \
+  GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -v ./cmd/golink
 
-
-FROM cgr.dev/chainguard/static:latest
+FROM gcr.io/distroless/static-debian12:nonroot
 
 ENV HOME /home/nonroot
 

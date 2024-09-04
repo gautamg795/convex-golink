@@ -1,0 +1,283 @@
+{
+    "url": "https://tacit-grouse-50.convex.cloud",
+    "functions": [
+        {
+          "args": {
+            "type": "object",
+            "value": {
+              "token": {
+                "fieldType": {
+                  "type": "string"
+                },
+                "optional": false
+              }
+            }
+          },
+          "functionType": "Mutation",
+          "identifier": "clear.js:default",
+          "returns": {
+            "type": "null"
+          },
+          "visibility": {
+            "kind": "public"
+          }
+        },
+        {
+          "args": {
+            "type": "object",
+            "value": {
+              "normalizedId": {
+                "fieldType": {
+                  "type": "string"
+                },
+                "optional": false
+              },
+              "token": {
+                "fieldType": {
+                  "type": "string"
+                },
+                "optional": false
+              }
+            }
+          },
+          "functionType": "Query",
+          "identifier": "load.js:loadOne",
+          "returns": {
+            "type": "union",
+            "value": [
+              {
+                "type": "object",
+                "value": {
+                  "created": {
+                    "fieldType": {
+                      "type": "number"
+                    },
+                    "optional": false
+                  },
+                  "lastEdit": {
+                    "fieldType": {
+                      "type": "number"
+                    },
+                    "optional": false
+                  },
+                  "long": {
+                    "fieldType": {
+                      "type": "string"
+                    },
+                    "optional": false
+                  },
+                  "normalizedId": {
+                    "fieldType": {
+                      "type": "string"
+                    },
+                    "optional": false
+                  },
+                  "owner": {
+                    "fieldType": {
+                      "type": "string"
+                    },
+                    "optional": false
+                  },
+                  "short": {
+                    "fieldType": {
+                      "type": "string"
+                    },
+                    "optional": false
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "visibility": {
+            "kind": "public"
+          }
+        },
+        {
+          "args": {
+            "type": "object",
+            "value": {
+              "token": {
+                "fieldType": {
+                  "type": "string"
+                },
+                "optional": false
+              }
+            }
+          },
+          "functionType": "Query",
+          "identifier": "load.js:loadAll",
+          "returns": {
+            "type": "array",
+            "value": {
+              "type": "object",
+              "value": {
+                "created": {
+                  "fieldType": {
+                    "type": "number"
+                  },
+                  "optional": false
+                },
+                "lastEdit": {
+                  "fieldType": {
+                    "type": "number"
+                  },
+                  "optional": false
+                },
+                "long": {
+                  "fieldType": {
+                    "type": "string"
+                  },
+                  "optional": false
+                },
+                "normalizedId": {
+                  "fieldType": {
+                    "type": "string"
+                  },
+                  "optional": false
+                },
+                "owner": {
+                  "fieldType": {
+                    "type": "string"
+                  },
+                  "optional": false
+                },
+                "short": {
+                  "fieldType": {
+                    "type": "string"
+                  },
+                  "optional": false
+                }
+              }
+            }
+          },
+          "visibility": {
+            "kind": "public"
+          }
+        },
+        {
+          "args": {
+            "type": "object",
+            "value": {
+              "token": {
+                "fieldType": {
+                  "type": "string"
+                },
+                "optional": false
+              }
+            }
+          },
+          "functionType": "Query",
+          "identifier": "stats.js:loadStats",
+          "returns": {
+            "type": "any"
+          },
+          "visibility": {
+            "kind": "public"
+          }
+        },
+        {
+          "args": {
+            "type": "object",
+            "value": {
+              "stats": {
+                "fieldType": {
+                  "keys": {
+                    "type": "string"
+                  },
+                  "type": "record",
+                  "values": {
+                    "fieldType": {
+                      "type": "number"
+                    },
+                    "optional": false
+                  }
+                },
+                "optional": false
+              },
+              "token": {
+                "fieldType": {
+                  "type": "string"
+                },
+                "optional": false
+              }
+            }
+          },
+          "functionType": "Mutation",
+          "identifier": "stats.js:saveStats",
+          "returns": {
+            "type": "null"
+          },
+          "visibility": {
+            "kind": "public"
+          }
+        },
+        {
+          "args": {
+            "type": "object",
+            "value": {
+              "link": {
+                "fieldType": {
+                  "type": "object",
+                  "value": {
+                    "created": {
+                      "fieldType": {
+                        "type": "number"
+                      },
+                      "optional": false
+                    },
+                    "lastEdit": {
+                      "fieldType": {
+                        "type": "number"
+                      },
+                      "optional": false
+                    },
+                    "long": {
+                      "fieldType": {
+                        "type": "string"
+                      },
+                      "optional": false
+                    },
+                    "normalizedId": {
+                      "fieldType": {
+                        "type": "string"
+                      },
+                      "optional": false
+                    },
+                    "owner": {
+                      "fieldType": {
+                        "type": "string"
+                      },
+                      "optional": false
+                    },
+                    "short": {
+                      "fieldType": {
+                        "type": "string"
+                      },
+                      "optional": false
+                    }
+                  }
+                },
+                "optional": false
+              },
+              "token": {
+                "fieldType": {
+                  "type": "string"
+                },
+                "optional": false
+              }
+            }
+          },
+          "functionType": "Mutation",
+          "identifier": "store.js:default",
+          "returns": {
+            "type": "null"
+          },
+          "visibility": {
+            "kind": "public"
+          }
+        }
+      ]
+}

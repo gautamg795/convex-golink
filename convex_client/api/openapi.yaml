@@ -1,0 +1,603 @@
+openapi: 3.0.3
+info:
+  title: Convex App - OpenAPI 3.0
+  version: 0.0.0
+servers:
+- description: Convex App API
+  url: "{hostUrl}"
+  variables:
+    hostUrl:
+      default: https://tacit-grouse-50.convex.cloud
+      description: The host URL of the Convex App API
+security:
+- bearerAuth: []
+tags:
+- description: Functions that read data
+  name: query
+- description: Functions that write/update/delete data
+  name: mutation
+- description: Functions that can make calls to external APIs
+  name: action
+paths:
+  /api/run/clear/default:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_clear.default'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_clear.default'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a mutation at the path clear.js:default
+      tags:
+      - mutation
+  /api/run/clear/deleteOne:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_clear.deleteOne'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_clear.deleteOne'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a mutation at the path clear.js:deleteOne
+      tags:
+      - mutation
+  /api/run/load/loadOne:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_load.loadOne'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_load.loadOne'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a query at the path load.js:loadOne
+      tags:
+      - query
+  /api/run/load/loadAll:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_load.loadAll'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_load.loadAll'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a query at the path load.js:loadAll
+      tags:
+      - query
+  /api/run/stats/loadStats:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_stats.loadStats'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_stats.loadStats'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a query at the path stats.js:loadStats
+      tags:
+      - query
+  /api/run/stats/saveStats:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_stats.saveStats'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_stats.saveStats'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a mutation at the path stats.js:saveStats
+      tags:
+      - mutation
+  /api/run/store/default:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_store.default'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_store.default'
+          description: Convex executed your request and returned a result
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Failed operation
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailedResponse'
+          description: Convex Internal Error
+      summary: Calls a mutation at the path store.js:default
+      tags:
+      - mutation
+components:
+  schemas:
+    Request_clear.default:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_clear_default_args'
+      required:
+      - args
+      type: object
+    Response_clear.default:
+      example:
+        errorMessage: errorMessage
+        value: value
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value:
+          nullable: true
+          type: string
+      required:
+      - status
+      type: object
+    Request_clear.deleteOne:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_clear_deleteOne_args'
+      required:
+      - args
+      type: object
+    Response_clear.deleteOne:
+      example:
+        errorMessage: errorMessage
+        value: value
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value:
+          nullable: true
+          type: string
+      required:
+      - status
+      type: object
+    Request_load.loadOne:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_clear_deleteOne_args'
+      required:
+      - args
+      type: object
+    Response_load.loadOne:
+      example:
+        errorMessage: errorMessage
+        value:
+          owner: owner
+          _creationTime: 0.8008281904610115
+          created: 6.027456183070403
+          short: short
+          _id: _id
+          lastEdit: 1.4658129805029452
+          long: long
+          normalizedId: normalizedId
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value:
+          $ref: '#/components/schemas/Response_load_loadOne_value'
+      required:
+      - status
+      type: object
+    Request_load.loadAll:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_clear_default_args'
+      required:
+      - args
+      type: object
+    Response_load.loadAll:
+      example:
+        errorMessage: errorMessage
+        value:
+        - owner: owner
+          _creationTime: 0.8008281904610115
+          created: 6.027456183070403
+          short: short
+          _id: _id
+          lastEdit: 1.4658129805029452
+          long: long
+          normalizedId: normalizedId
+        - owner: owner
+          _creationTime: 0.8008281904610115
+          created: 6.027456183070403
+          short: short
+          _id: _id
+          lastEdit: 1.4658129805029452
+          long: long
+          normalizedId: normalizedId
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value:
+          items:
+            $ref: '#/components/schemas/Response_load_loadAll_value_inner'
+          type: array
+      required:
+      - status
+      type: object
+    Request_stats.loadStats:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_clear_default_args'
+      required:
+      - args
+      type: object
+    Response_stats.loadStats:
+      example:
+        errorMessage: errorMessage
+        value: ""
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value: {}
+      required:
+      - status
+      type: object
+    Request_stats.saveStats:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_stats_saveStats_args'
+      required:
+      - args
+      type: object
+    Response_stats.saveStats:
+      example:
+        errorMessage: errorMessage
+        value: value
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value:
+          nullable: true
+          type: string
+      required:
+      - status
+      type: object
+    Request_store.default:
+      properties:
+        args:
+          $ref: '#/components/schemas/Request_store_default_args'
+      required:
+      - args
+      type: object
+    Response_store.default:
+      example:
+        errorMessage: errorMessage
+        value: value
+        errorData: "{}"
+        status: success
+      properties:
+        status:
+          enum:
+          - success
+          - error
+          type: string
+        errorMessage:
+          type: string
+        errorData:
+          type: object
+        value:
+          nullable: true
+          type: string
+      required:
+      - status
+      type: object
+    FailedResponse:
+      properties: {}
+      type: object
+    Request_clear_default_args:
+      properties:
+        token:
+          type: string
+      required:
+      - token
+      type: object
+    Request_clear_deleteOne_args:
+      properties:
+        normalizedId:
+          type: string
+        token:
+          type: string
+      required:
+      - normalizedId
+      - token
+      type: object
+    Response_load_loadOne_value:
+      example:
+        owner: owner
+        _creationTime: 0.8008281904610115
+        created: 6.027456183070403
+        short: short
+        _id: _id
+        lastEdit: 1.4658129805029452
+        long: long
+        normalizedId: normalizedId
+      nullable: true
+      properties:
+        _creationTime:
+          type: number
+        _id:
+          description: ID from table "links"
+          type: string
+        created:
+          type: number
+        lastEdit:
+          type: number
+        long:
+          type: string
+        normalizedId:
+          type: string
+        owner:
+          type: string
+        short:
+          type: string
+      required:
+      - _creationTime
+      - _id
+      - created
+      - lastEdit
+      - long
+      - normalizedId
+      - owner
+      - short
+      type: object
+    Response_load_loadAll_value_inner:
+      example:
+        owner: owner
+        _creationTime: 0.8008281904610115
+        created: 6.027456183070403
+        short: short
+        _id: _id
+        lastEdit: 1.4658129805029452
+        long: long
+        normalizedId: normalizedId
+      properties:
+        _creationTime:
+          type: number
+        _id:
+          description: ID from table "links"
+          type: string
+        created:
+          type: number
+        lastEdit:
+          type: number
+        long:
+          type: string
+        normalizedId:
+          type: string
+        owner:
+          type: string
+        short:
+          type: string
+      required:
+      - _creationTime
+      - _id
+      - created
+      - lastEdit
+      - long
+      - normalizedId
+      - owner
+      - short
+      type: object
+    Request_stats_saveStats_args:
+      properties:
+        stats:
+          type: object
+        token:
+          type: string
+      required:
+      - stats
+      - token
+      type: object
+    Request_store_default_args_link:
+      properties:
+        created:
+          type: number
+        lastEdit:
+          type: number
+        long:
+          type: string
+        normalizedId:
+          type: string
+        owner:
+          type: string
+        short:
+          type: string
+      required:
+      - created
+      - lastEdit
+      - long
+      - normalizedId
+      - owner
+      - short
+      type: object
+    Request_store_default_args:
+      properties:
+        link:
+          $ref: '#/components/schemas/Request_store_default_args_link'
+        token:
+          type: string
+      required:
+      - link
+      - token
+      type: object
+  securitySchemes:
+    bearerAuth:
+      description: "Token of the format \"Bearer {token}\" for normal authentication\
+        \ and \"Convex {token}\" for admin tokens."
+      scheme: bearer
+      type: http
