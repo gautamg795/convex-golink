@@ -2,6 +2,12 @@ FROM --platform=$BUILDPLATFORM golang:1.23-alpine as build
 
 WORKDIR /work
 
+COPY convex_client/ convex_client/
+WORKDIR /work/convex_client
+RUN go mod download
+
+WORKDIR /work
+
 COPY go.mod go.sum ./
 RUN go mod download
 
