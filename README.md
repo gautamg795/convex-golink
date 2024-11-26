@@ -121,6 +121,100 @@ destination="/home/nonroot"
 
 </details>
 
+<details>
+  <summary>Deploy on Modal</summary>
+
+  See the [Modal docs](https://modal.com/docs/guide/managing-deployments) for full instructions on long-lived deployments.
+
+  Create a `golinks.py` file:
+
+  ```python
+import subprocess
+
+import modal
+
+app = modal.App(name="golinks")
+
+vol = modal.Volume.from_name("golinks-data", create_if_missing=True)
+
+image = modal.Image.from_registry(
+    "golang:1.23.0-bookworm",
+    add_python="3.10",
+).run_commands(["go install -v github.com/tailscale/golink/cmd/golink@latest"])
+
+@app.cls(
+    image=image,
+    secrets=[modal.Secret.from_name("golinks")],
+    volumes={"/root/.config": vol},
+    keep_warm=1,
+    concurrency_limit=1,
+)
+class Golinks:
+    @modal.enter()
+    def start_golinks(self):
+        subprocess.Popen(
+            [
+                "golink",
+                "-verbose",
+                "--sqlitedb",
+                "/root/.config/golink.db",
+            ]
+        )
+```
+
+  Then create your secret and deploy with the [Modal CLI](https://github.com/modal-labs/modal-client):
+
+  ```sh
+$ modal secret create golinks TS_AUTHKEY=<key>
+$ modal deploy golinks.py
+  ```
+
+</details>
+
+## Permissions
+
+By default, users own the links they create and only they can update or delete those links.
+Ownership can be transferred to another user from the link edit page.
+Links whose owner is no longer part of the tailnet can be edited by any user,
+at which point that user will become the new owner.
+
+Users can be granted admin access to edit all links using [ACL grants] in your tailnet policy file.
+For example, if you have your golink instance tagged with `tag:golink` and a user group named `group:golink-admins`,
+you can grant them admin access using:
+
+```json
+{
+  "grants": [{
+      "src": ["group:golink-admins"],
+      "dst": ["tag:golink"],
+      "app": {
+        "tailscale.com/cap/golink": [{
+            "admin": true
+        }]
+      }
+  }]
+}
+```
+
+Or if you want to effectively disable the ownership model and allow everyone in your tailnet to edit all links,
+you could assign the grant to `autogroup:member`:
+
+```json
+{
+  "grants": [{
+      "src": ["autogroup:member"],
+      "dst": ["tag:golink"],
+      "app": {
+        "tailscale.com/cap/golink": [{
+            "admin": true
+        }]
+      }
+  }]
+}
+```
+
+[ACL grants]: https://tailscale.com/kb/1324/acl-grants
+
 ## Backups
 
 Once you have golink running, you can backup all of your links in [JSON lines] format from <http://go/.export>.
@@ -146,3 +240,16 @@ If you're using Firefox, you might want to configure two options to make it easy
     with a value of _true_
 
   * if you use HTTPS-Only Mode, [add an exception](https://support.mozilla.org/en-US/kb/https-only-prefs#w_add-exceptions-for-http-websites-when-youre-in-https-only-mode)
+
+## HTTPS
+
+When golink joins your tailnet it will check to see if HTTPS is enabled and
+begin serving HTTPS traffic it detects that it is. When HTTPS is enabled golink
+will redirect all requests received by the HTTP endpoint first to their internal
+HTTPS equivalent before redirecting to the external link destination.
+
+**NB:** If you use `curl` to interact with the API of a golink instance with HTTPS
+enabled over its HTTP interface you _must_ specify the `-L` flag to follow these
+redirects or else your request will terminate early with an empty response. We
+recommend the use of the `-L` flag in all deployments regardless of current
+HTTPS status to avoid accidental outages should it be enabled in the future.

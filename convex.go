@@ -171,6 +171,11 @@ func (c *ConvexDB) Save(link *Link) error {
 	return c.mutation(&args)
 }
 
+func (c *ConvexDB) Delete(short string) error {
+	args := UdfExecution{"deleteLink", map[string]interface{}{"normalizedId": linkID(short)}, "json"}
+	return c.mutation(&args)
+}
+
 func (c *ConvexDB) LoadStats() (ClickStats, error) {
 	args := UdfExecution{"stats:loadStats", map[string]interface{}{}, "json"}
 	response, err := c.query(&args)
@@ -201,5 +206,10 @@ func (c *ConvexDB) SaveStats(stats ClickStats) error {
 		mungedStats[linkID(id)] = clicks
 	}
 	args := UdfExecution{"stats:saveStats", map[string]interface{}{"stats": mungedStats}, "json"}
+	return c.mutation(&args)
+}
+
+func (c *ConvexDB) DeleteStats(short string) error {
+	args := UdfExecution{"stats:deleteStats", map[string]interface{}{"normalizedId": linkID(short)}, "json"}
 	return c.mutation(&args)
 }

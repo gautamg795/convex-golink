@@ -34,6 +34,8 @@ type Database interface {
 	LoadAll() ([]*Link, error)
 	Load(short string) (*Link, error)
 	Save(link *Link) error
+	Delete(short string) error
 	LoadStats() (ClickStats, error)
 	SaveStats(stats ClickStats) error
+	DeleteStats(short string) error
 }

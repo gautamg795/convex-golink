@@ -1,7 +1,10 @@
-FROM --platform=$BUILDPLATFORM cgr.dev/chainguard/wolfi-base as build
-RUN apk update && apk add build-base git openssh go-1.20
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine as build
 
 WORKDIR /work
+
+# Install git so that go build populates the VCS details in build info, which
+# is then reported to Tailscale in the node version string.
+RUN apk add git
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -9,13 +12,12 @@ RUN go mod download
 COPY . .
 ARG TARGETOS TARGETARCH TARGETVARIANT
 RUN \
-    if [ "${TARGETARCH}" = "arm" ] && [ -n "${TARGETVARIANT}" ]; then \
-      export GOARM="${TARGETVARIANT#v}"; \
-    fi; \
-    GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -v ./cmd/golink
+  if [ "${TARGETARCH}" = "arm" ] && [ -n "${TARGETVARIANT}" ]; then \
+  export GOARM="${TARGETVARIANT#v}"; \
+  fi; \
+  GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -v ./cmd/golink
 
-
-FROM cgr.dev/chainguard/static:latest
+FROM gcr.io/distroless/static-debian12:nonroot
 
 ENV HOME /home/nonroot
 

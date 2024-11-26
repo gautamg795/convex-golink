@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as clear from "../clear";
+import type * as deleteLink from "../deleteLink";
 import type * as load from "../load";
 import type * as stats from "../stats";
 import type * as store from "../store";
@@ -29,6 +30,7 @@ import type * as store from "../store";
  */
 declare const fullApi: ApiFromModules<{
   clear: typeof clear;
+  deleteLink: typeof deleteLink;
   load: typeof load;
   stats: typeof stats;
   store: typeof store;

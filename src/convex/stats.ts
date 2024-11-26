@@ -16,7 +16,7 @@ export const loadStats = query({
           .first()
       )?.clicks;
       if (clicks) {
-        stats[link.normalizedId] = clicks;
+        stats[link.short] = clicks;
       }
     }
     return stats;
@@ -48,6 +48,29 @@ export const saveStats = mutation({
       } else {
         console.warn("Writing stats for nonexistent link: ", normalizedId);
       }
+    }
+  },
+});
+
+export const deleteStats = mutation({
+  args: { normalizedId: v.string(), token: v.string() },
+  handler: async (ctx, { normalizedId, token }) => {
+    if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
+      throw new Error("Invalid authorization token");
+    }
+    let existing = await ctx.db
+      .query("links")
+      .withIndex("by_normalizedId", (q) => q.eq("normalizedId", normalizedId))
+      .first();
+    if (existing === null) {
+      return;
+    }
+    let stats = await ctx.db
+      .query("stats")
+      .withIndex("byLink", (q) => q.eq("link", existing!._id))
+      .first();
+    if (stats !== null) {
+      await ctx.db.delete(stats._id);
     }
   },
 });
