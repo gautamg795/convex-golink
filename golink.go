@@ -256,7 +256,7 @@ out:
 	}
 
 	if publicPort != nil && *publicPort != 0 {
-		go servePublic(*publicPort)
+		go servePublic(*publicPort, httpHandler)
 	}
 
 	log.Printf("Serving http://%s/ ...", *hostname)
