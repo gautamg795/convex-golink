@@ -267,14 +267,15 @@ out:
 	return nil
 }
 
-func servePublic(port int) {
+func servePublic(port int, handler http.Handler) {
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		sentry.CaptureException(err)
 		log.Fatal(err)
 	}
 	defer l.Close()
-	err = http.Serve(l, nil)
+	log.Printf("Serving on public port %d", port)
+	err = http.Serve(l, handler)
 	if err != nil {
 		sentry.CaptureException(err)
 		log.Fatal(err)
