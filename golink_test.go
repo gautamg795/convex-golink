@@ -13,6 +13,8 @@ import (
 	"time"
 
 	"golang.org/x/net/xsrftoken"
+	"tailscale.com/tstest"
+	"tailscale.com/types/ptr"
 	"tailscale.com/util/must"
 )
 
@@ -74,6 +76,31 @@ func TestServeGo(t *testing.T) {
 			link:       "/who/http://host",
 			wantStatus: http.StatusFound,
 			wantLink:   "http://who/http://host",
+		},
+		{
+			name:       "simple link, trailing period",
+			link:       "/who.",
+			wantStatus: http.StatusFound,
+			wantLink:   "http://who/",
+		},
+		{
+			name:       "simple link, trailing comma",
+			link:       "/who,",
+			wantStatus: http.StatusFound,
+			wantLink:   "http://who/",
+		},
+		{
+			// This seems like an incredibly unlikely typo, but test it anyway.
+			name:       "simple link, trailing comma and path",
+			link:       "/who,/p",
+			wantStatus: http.StatusFound,
+			wantLink:   "http://who/p",
+		},
+		{
+			name:       "simple link, trailing paren",
+			link:       "/who)",
+			wantStatus: http.StatusFound,
+			wantLink:   "http://who/",
 		},
 		{
 			name:       "user link",
@@ -329,6 +356,108 @@ func TestServeDelete(t *testing.T) {
 				t.Errorf("serveDelete(%q) = %d; want %d", tt.short, w.Code, tt.wantStatus)
 			}
 		})
+	}
+}
+
+func TestServeExport(t *testing.T) {
+	clock := tstest.NewClock(tstest.ClockOpts{
+		Start: time.Date(2022, 06, 02, 1, 2, 3, 4, time.UTC),
+	})
+
+	sqlDB, err := NewSQLiteDB(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sqlDB.clock = clock
+	db = sqlDB
+	db.Save(&Link{Short: "a", Owner: "a@example.com"})
+	db.Save(&Link{Short: "foo", Owner: "foo@example.com"})
+	db.Save(&Link{Short: "link-owned-by-tagged-devices", Long: "/before", Owner: "tagged-devices"})
+
+	click := func(id string) {
+		r := httptest.NewRequest("GET", "/"+id, nil)
+		w := httptest.NewRecorder()
+		serveHandler().ServeHTTP(w, r)
+	}
+	initStats()
+	click("a")
+	click("foo")
+	click("foo")
+	flushStats()
+	clock.Advance(3 * time.Minute)
+	click("a")
+
+	// export links
+	r := httptest.NewRequest("GET", "/.export", nil)
+	w := httptest.NewRecorder()
+	serveHandler().ServeHTTP(w, r)
+
+	if want := http.StatusOK; w.Code != want {
+		t.Errorf("serveExport = %d; want %d", w.Code, want)
+	}
+	wantOutput := `{"Short":"a","Long":"","Created":"0001-01-01T00:00:00Z","LastEdit":"0001-01-01T00:00:00Z","Owner":"a@example.com"}
+{"Short":"foo","Long":"","Created":"0001-01-01T00:00:00Z","LastEdit":"0001-01-01T00:00:00Z","Owner":"foo@example.com"}
+{"Short":"link-owned-by-tagged-devices","Long":"/before","Created":"0001-01-01T00:00:00Z","LastEdit":"0001-01-01T00:00:00Z","Owner":"tagged-devices"}
+`
+	if got := w.Body.String(); got != wantOutput {
+		t.Errorf("serveExport = %v; want %v", got, wantOutput)
+	}
+
+	// export links stats
+	r = httptest.NewRequest("GET", "/.export-stats", nil)
+	w = httptest.NewRecorder()
+	serveHandler().ServeHTTP(w, r)
+
+	if want := http.StatusOK; w.Code != want {
+		t.Errorf("serveExportStats = %d; want %d", w.Code, want)
+	}
+	wantOutput = `a,1654131723,1
+foo,1654131723,2
+a,1654131903,1
+`
+	if got := w.Body.String(); got != wantOutput {
+		t.Errorf("serveExportStats = %v; want %v", got, wantOutput)
+	}
+}
+
+func TestReadOnlyMode(t *testing.T) {
+	var err error
+	db, err = NewSQLiteDB(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	db.Save(&Link{Short: "who", Long: "http://who/"})
+
+	oldReadOnly := readonly
+	readonly = ptr.To(true)
+	defer func() { readonly = oldReadOnly }()
+
+	// resolving link should succeed
+	r := httptest.NewRequest("GET", "/who", nil)
+	w := httptest.NewRecorder()
+	serveHandler().ServeHTTP(w, r)
+	if want := http.StatusFound; w.Code != want {
+		t.Errorf("serveHandler() = %d; want %d", w.Code, want)
+	}
+	wantLocation := "http://who/"
+	if location := w.Header().Get("Location"); location != wantLocation {
+		t.Errorf("serveHandler() location = %v; want %v", location, wantLocation)
+	}
+
+	// updating link should fail
+	r = httptest.NewRequest("POST", "/", nil)
+	w = httptest.NewRecorder()
+	serveHandler().ServeHTTP(w, r)
+	if want := http.StatusMethodNotAllowed; w.Code != want {
+		t.Errorf("serveHandler() = %d; want %d", w.Code, want)
+	}
+
+	// deleting link should fail
+	r = httptest.NewRequest("POST", "/.delete/who", nil)
+	w = httptest.NewRecorder()
+	serveHandler().ServeHTTP(w, r)
+	if want := http.StatusMethodNotAllowed; w.Code != want {
+		t.Errorf("serveHandler() = %d; want %d", w.Code, want)
 	}
 }
 
@@ -608,6 +737,92 @@ func TestNoHSTSShortDomain(t *testing.T) {
 			_, found := w.Header()["Strict-Transport-Security"]
 			if found != tt.expectHsts {
 				t.Errorf("HSTS expectation: domain %s want: %t got: %t", tt.host, tt.expectHsts, found)
+			}
+		})
+	}
+}
+
+func TestHTTPSRedirectHandlerWithQuery(t *testing.T) {
+	h := redirectHandler("foobar.com")
+	r := httptest.NewRequest("GET", "http://example.com/?query=bar", nil)
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, r)
+	if w.Code != http.StatusFound {
+		t.Errorf("got %d; want %d", w.Code, http.StatusFound)
+	}
+	if w.Header().Get("Location") != "https://foobar.com/?query=bar" {
+		t.Errorf("got %q; want %q", w.Header().Get("Location"), "https://foobar.com/?query=bar")
+	}
+}
+
+func TestServeSearch(t *testing.T) {
+	var err error
+	db, err = NewSQLiteDB(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	links := []*Link{
+		{Short: "alpha", Long: "http://alpha/", Owner: "foo@example.com"},
+		{Short: "beta", Long: "http://beta/", Owner: "foo@example.com"},
+		{Short: "gamma", Long: "http://gamma/", Owner: "bar@example.com"},
+		{Short: "delta", Long: "http://delta/", Owner: "FOO@example.com"},
+	}
+	for _, link := range links {
+		if err := db.Save(link); err != nil {
+			t.Error(err)
+		}
+	}
+
+	tests := []struct {
+		name            string
+		owner           string
+		wantStatus      int
+		wantContains    []string // substrings that should appear in response body
+		wantNotContains []string // substrings that should NOT appear in response body
+	}{
+		{
+			name:            "search by owner with multiple links",
+			owner:           "foo@example.com",
+			wantStatus:      http.StatusOK,
+			wantContains:    []string{"alpha", "beta", "delta", "3 total"},
+			wantNotContains: []string{"gamma"},
+		},
+		{
+			name:         "search by owner case insensitive",
+			owner:        "FOO@EXAMPLE.COM",
+			wantStatus:   http.StatusOK,
+			wantContains: []string{"alpha", "beta", "delta"},
+		},
+		{
+			name:            "search by owner with single link",
+			owner:           "bar@example.com",
+			wantStatus:      http.StatusOK,
+			wantContains:    []string{"gamma", "1 total"},
+			wantNotContains: []string{"alpha", "beta"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testURL := "/.search?q=owner:" + url.QueryEscape(tt.owner)
+			r := httptest.NewRequest("GET", testURL, nil)
+			w := httptest.NewRecorder()
+			serveHandler().ServeHTTP(w, r)
+
+			if w.Code != tt.wantStatus {
+				t.Errorf("serveSearch(owner=%q) = %d; want %d", tt.owner, w.Code, tt.wantStatus)
+			}
+
+			body := w.Body.String()
+			for _, s := range tt.wantContains {
+				if !strings.Contains(body, s) {
+					t.Errorf("serveSearch(owner=%q) body missing %q", tt.owner, s)
+				}
+			}
+			for _, s := range tt.wantNotContains {
+				if strings.Contains(body, s) {
+					t.Errorf("serveSearch(owner=%q) body unexpectedly contains %q", tt.owner, s)
+				}
 			}
 		})
 	}

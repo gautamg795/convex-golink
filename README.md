@@ -57,6 +57,27 @@ As long as this is on a persistent volume, the auth key only needs to be provide
 [tag]: https://tailscale.com/kb/1068/acl-tags/
 [os.UserConfigDir]: https://pkg.go.dev/os#UserConfigDir
 
+## Docker Compose
+
+To run golink via Docker Compose:
+
+```yaml
+volumes:
+  data:
+
+services:
+  golink:
+    image: ghcr.io/tailscale/golink:main
+    container_name: golink
+    restart: unless-stopped
+    volumes:
+      - 'data:/home/nonroot'
+```
+
+To initialize the container with an auth key run:
+
+    docker compose run --rm --env 'TS_AUTHKEY=tskey-auth-<key>' golink
+
 ## MagicDNS
 
 When golink joins your tailnet, it will attempt to use "go" as its node name,
@@ -167,6 +188,21 @@ class Golinks:
   ```sh
 $ modal secret create golinks TS_AUTHKEY=<key>
 $ modal deploy golinks.py
+  ```
+
+</details>
+
+<details>
+  <summary>Deploy on Kubernetes</summary>
+
+  There is an helm chart provided [here](https://github.com/tiesmaster/golink-helm-chart)
+  that can be used to deploy golink to Kubernetes.
+  See the `README.md` for [full instructions](https://github.com/tiesmaster/golink-helm-chart#installing-the-chart),
+  and [helm values](https://github.com/tiesmaster/golink-helm-chart?tab=readme-ov-file#values).
+  But in a nutshell, you can deploy to Kubernetes like this:
+
+  ```sh
+  helm install golink oci://ghcr.io/tiesmaster/golink
   ```
 
 </details>

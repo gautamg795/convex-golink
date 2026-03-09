@@ -213,3 +213,30 @@ func (c *ConvexDB) DeleteStats(short string) error {
 	args := UdfExecution{"stats:deleteStats", map[string]interface{}{"normalizedId": linkID(short)}, "json"}
 	return c.mutation(&args)
 }
+
+func (c *ConvexDB) GetLinksByOwner(owner string) ([]*Link, error) {
+	args := UdfExecution{"load:loadByOwner", map[string]interface{}{"owner": owner}, "json"}
+	resp, err := c.query(&args)
+	if err != nil {
+		return nil, err
+	}
+	var docs []LinkDocument
+	decoder := json.NewDecoder(bytes.NewReader(resp))
+	decoder.UseNumber()
+	err = decoder.Decode(&docs)
+	if err != nil {
+		return nil, err
+	}
+	var links []*Link
+	for _, doc := range docs {
+		link := Link{
+			Short:    doc.Short,
+			Long:     doc.Long,
+			Created:  time.Unix(int64(doc.Created), 0),
+			LastEdit: time.Unix(int64(doc.LastEdit), 0),
+			Owner:    doc.Owner,
+		}
+		links = append(links, &link)
+	}
+	return links, nil
+}

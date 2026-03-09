@@ -11,7 +11,9 @@ export const LinkDoc = {
 };
 
 export default defineSchema({
-  links: defineTable(LinkDoc).index("by_normalizedId", ["normalizedId"]),
+  links: defineTable(LinkDoc)
+    .index("by_normalizedId", ["normalizedId"])
+    .index("by_owner", ["owner"]),
   stats: defineTable({
     link: v.id("links"),
     clicks: v.number(),

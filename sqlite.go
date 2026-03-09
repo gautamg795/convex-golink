@@ -11,12 +11,15 @@ import (
 	"time"
 
 	_ "modernc.org/sqlite"
+	"tailscale.com/tstime"
 )
 
 // SQLiteDB stores Links in a SQLite database.
 type SQLiteDB struct {
 	db *sql.DB
 	mu sync.RWMutex
+
+	clock tstime.Clock // allow overriding time for tests
 }
 
 //go:embed schema.sql
@@ -37,6 +40,11 @@ func NewSQLiteDB(f string) (*SQLiteDB, error) {
 	}
 
 	return &SQLiteDB{db: db}, nil
+}
+
+// Now returns the current time.
+func (s *SQLiteDB) Now() time.Time {
+	return tstime.DefaultClock{Clock: s.clock}.Now()
 }
 
 // LoadAll returns all stored Links.
@@ -170,7 +178,7 @@ func (s *SQLiteDB) SaveStats(stats ClickStats) error {
 	if err != nil {
 		return err
 	}
-	now := time.Now().Unix()
+	now := s.Now().Unix()
 	for short, clicks := range stats {
 		_, err := tx.Exec("INSERT INTO Stats (ID, Created, Clicks) VALUES (?, ?, ?)", linkID(short), now, clicks)
 		if err != nil {
@@ -191,4 +199,28 @@ func (s *SQLiteDB) DeleteStats(short string) error {
 		return err
 	}
 	return nil
+}
+
+// GetLinksByOwner returns all Links owned by the specified owner.
+func (s *SQLiteDB) GetLinksByOwner(owner string) ([]*Link, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	var links []*Link
+	rows, err := s.db.Query("SELECT Short, Long, Created, LastEdit, Owner FROM Links WHERE LOWER(Owner) = LOWER(?)", owner)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		link := new(Link)
+		var created, lastEdit int64
+		err := rows.Scan(&link.Short, &link.Long, &created, &lastEdit, &link.Owner)
+		if err != nil {
+			return nil, err
+		}
+		link.Created = time.Unix(created, 0).UTC()
+		link.LastEdit = time.Unix(lastEdit, 0).UTC()
+		links = append(links, link)
+	}
+	return links, rows.Err()
 }

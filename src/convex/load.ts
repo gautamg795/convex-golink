@@ -24,3 +24,16 @@ export const loadAll = query({
     return await ctx.db.query("links").fullTableScan().collect();
   },
 });
+
+export const loadByOwner = query({
+  args: { owner: v.string(), token: v.string() },
+  handler: async (ctx, { owner, token }) => {
+    if (token === "" || token !== process.env.CONVEX_AUTH_TOKEN) {
+      throw new Error("Invalid authorization token");
+    }
+    return await ctx.db
+      .query("links")
+      .withIndex("by_owner", (q) => q.eq("owner", owner))
+      .collect();
+  },
+});

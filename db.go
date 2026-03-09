@@ -38,4 +38,5 @@ type Database interface {
 	LoadStats() (ClickStats, error)
 	SaveStats(stats ClickStats) error
 	DeleteStats(short string) error
+	GetLinksByOwner(owner string) ([]*Link, error)
 }
