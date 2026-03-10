@@ -268,6 +268,13 @@ out:
 	fqdn := strings.TrimSuffix(status.Self.DNSName, ".")
 
 	httpHandler := serveHandler()
+	if publicPort != nil && *publicPort != 0 {
+		// Start the public port listener before TLS setup replaces
+		// httpHandler with a redirect. The public port serves the real
+		// content handler since TLS is terminated externally (e.g. Traefik).
+		go servePublic(*publicPort, httpHandler)
+	}
+
 	if enableTLS {
 		httpsHandler := HSTS(httpHandler)
 		httpHandler = redirectHandler(fqdn)
@@ -283,10 +290,6 @@ out:
 				log.Fatal(err)
 			}
 		}()
-	}
-
-	if publicPort != nil && *publicPort != 0 {
-		go servePublic(*publicPort, httpHandler)
 	}
 
 	log.Printf("Serving http://%s/ ...", *hostname)
